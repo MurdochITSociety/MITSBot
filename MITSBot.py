@@ -199,6 +199,46 @@ def birthdayExists(userID):
             return True
     return False
 
+async def addBday(message):
+    userID = str(message.author.id)
+    if (birthdayExists(userID)):
+        await message.channel.send("Your birthday is already registered. To remove and re-submit your birthday, try using m!help.")
+        return
+    try:
+        birthday = datetime.datetime.strptime(message.content[10:], '%b %d')
+    except:
+        try:
+            birthday = datetime.datetime.strptime(message.content[10:], '%B %d')
+        except:
+            await message.channel.send("That wasn't quite right. Try using m!help to find the right command.")
+            return
+    f = open('birthdays.txt', "a")
+    f.write(userID + ' ' + str(birthday.strftime("%B %d")) + '\n')
+    f.close()
+    await message.channel.send("Your birthday has been registered.")
+    return
+    
+async def delBday(message):
+    userID = str(message.author.id)
+    if (not birthdayExists(userID)):
+        await message.channel.send("Your birthday hasn't been registered yet. Try using m!help to register your birthday first.")
+        return
+    birthdays = getBdays()
+    f = open('birthdays.txt', "w")
+    for birthday in birthdays:
+        if (userID not in birthday):
+            f.write(birthday)
+    f.close()
+    await message.channel.send("Your birthday has been deleted.")
+    return
+    
+async def viewBday(message):
+    todaysBirthdays = getTodaysBirthdays()
+    if (todaysBirthdays != 0):
+        await message.channel.send(embed=todaysBirthdays)
+    else:
+        await message.channel.send("It's nobody\'s birthday today :(")
+
 @client.event
 async def on_message(message):
     # Check if message came from bot
@@ -211,44 +251,16 @@ async def on_message(message):
         
         # Check what the command is, and respond accordingly
         if (command.startswith("addbday")):
-            userID = str(message.author.id)
-            if (birthdayExists(userID)):
-                await message.channel.send("Your birthday is already registered. To remove and re-submit your birthday, try using m!help.")
-                return
-            try:
-                birthday = datetime.datetime.strptime(message.content[10:], '%b %d')
-            except:
-                try:
-                    birthday = datetime.datetime.strptime(message.content[10:], '%B %d')
-                except:
-                    await message.channel.send("That wasn't quite right. Try using m!help to find the right command.")
-                    return
-            f = open('birthdays.txt', "a")
-            f.write(userID + ' ' + str(birthday.strftime("%B %d")) + '\n')
-            f.close()
-            await message.channel.send("Your birthday has been registered.")
+            await addBday(message)
             return
         elif (command.startswith("delbday")):
-            userID = str(message.author.id)
-            if (not birthdayExists(userID)):
-                await message.channel.send("Your birthday hasn't been registered yet. Try using m!help to register your birthday first.")
-                return
-            birthdays = getBdays()
-            f = open('birthdays.txt', "w")
-            for birthday in birthdays:
-                if (userID not in birthday):
-                    f.write(birthday)
-            f.close()
-            await message.channel.send("Your birthday has been deleted.")
+            await delBday(message)
             return
         elif (command.startswith("help")):
             await message.channel.send(embed=helpEmbed)
         elif (command.startswith("viewbday")):
-            todaysBirthdays = getTodaysBirthdays()
-            if (todaysBirthdays != 0):
-                await message.channel.send(embed=todaysBirthdays)
-            else:
-                await message.channel.send("It's nobody\'s birthday today :(")
+            await viewBday(message)
+            return
         elif (command.startswith("resources")):
             await message.channel.send(embed=resourcesEmbed)
         else:
