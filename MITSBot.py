@@ -60,20 +60,41 @@ resourcesEmbed.add_field(name='<:person_raising_hand:780285082228228116> Support
     [Mental Health Helplines](https://www.healthdirect.gov.au/mental-health-helplines)\n\
     [Headspace](https://headspace.org.au/)')
 
+# Return lines from a file
+def getFileLines(file):
+    f = open(file, "r")
+    lines = f.readlines()
+    f.close
+    return lines
+
 # Filter deals that contain a blacklisted keyword
-def FilterDeal(deal):
+def filterDeal(deal):
     filterList = ["Alienware", "Vacuum", "Blender", "Coffee", "Washer", "Washing Machine", "Fryer", "Battery", "Batteries", "Lamp", "Mower", "Barista", "Shaver", "Purifier", "Camera"] 
     for filter in filterList:
         if  (filter.lower() in deal.lower()):
             return True
     return False
 
+# Create deal embed
+def newDealEmbed(titleVar, imageLink, store, couponCode, dealLink, externalLink):
+    embed = discord.Embed(
+        title = titleVar,
+        description = '_ _\n_ _\n',
+        colour = discord.Colour(0xbe2a36)
+    )
+    embed.set_thumbnail(url=imageLink)
+    embed.add_field(name='Store', value=store)
+    embed.add_field(name='Coupon Code', value=couponCode)
+    embed.add_field(name='_ _', value='_ _', inline=False)
+    embed.add_field(name='OzBargain Link', value='[Here]('+dealLink+')')
+    embed.add_field(name='Deal Link', value='[Here]('+externalLink+')')
+    return embed
+
 # Scrape url for new deals
-def CheckURL(url, file, otherFile):
+def checkURL(url, file, otherFile):
+
     # Fetch deals from first history file
-    f = open(file, "r")
-    dealHistory = f.readlines()
-    f.close()
+    dealHistory = getFileLines(file)
 
     # Reduce size of first deals history file (if over 60 lines)
     if (len(dealHistory) > 60):
@@ -84,9 +105,7 @@ def CheckURL(url, file, otherFile):
         f.close()
  
     # Fetch deals from second history file
-    f = open(otherFile, "r")
-    dealHistory = dealHistory + f.readlines()
-    f.close()
+    dealHistory = dealHistory + getFileLines(otherFile)
 
     newDeals = []
 
@@ -106,7 +125,7 @@ def CheckURL(url, file, otherFile):
         # Check if deal has already been posted, or contains a restricted keyword
         if (str(dealLink + '\n') in dealHistory):
             continue
-        elif (FilterDeal(aElement.text) is True):
+        elif (filterDeal(aElement.text) is True):
             continue
 
         else:
@@ -125,19 +144,10 @@ def CheckURL(url, file, otherFile):
             externalLink = '<https://www.ozbargain.com.au' + foxshot.find('a', href=True)['href'] + '>'
             
             # Create new Discord embed message, and add it to the new deals list
-            embed = discord.Embed(
-                title = titleVar,
-                description = '_ _\n_ _\n',
-                colour = discord.Colour(0xbe2a36)
-            )
-            embed.set_thumbnail(url=imageLink)
-            embed.add_field(name='Store', value=store)
-            embed.add_field(name='Coupon Code', value=couponCode)
-            embed.add_field(name='_ _', value='_ _', inline=False)
-            embed.add_field(name='OzBargain Link', value='[Here]('+refinedDealLink+')')
-            embed.add_field(name='Deal Link', value='[Here]('+externalLink+')')
+            embed = newDealEmbed(titleVar, imageLink, store, couponCode, refinedDealLink, externalLink)
             newDeals.append(dealLink)
             dealEmbeds.append(embed)
+            
             print ("Found new deal: " + str(dealLink))
     
     # Append new deals to the relevant deals history file
