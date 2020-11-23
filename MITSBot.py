@@ -157,7 +157,7 @@ def checkURL(url, file, otherFile):
     f.close()
     return dealEmbeds
       
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=2)
 async def checkForDeals():
     dealEmbeds = CheckURL('https://www.ozbargain.com.au/cat/computing', 'computing.txt', 'electronics.txt')
     print ("Checked for new computing deals.")
