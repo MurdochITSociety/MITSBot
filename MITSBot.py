@@ -41,6 +41,7 @@ resourcesEmbed.add_field(name='_ _', value='_ _', inline=True) # Limits embed to
 resourcesEmbed.add_field(name='<:question:780285635021897729> Course Help', value=' \
     [Murdoch Handbook](https://handbook.murdoch.edu.au/)\n\
     [Dates and Timetables](https://timetables.murdoch.edu.au/)\n\
+    [Course Plans](https://www.murdoch.edu.au/mymurdoch/support-advice/student-admin/enrolment/how-to-enrol/course-plans/)\n\
     [myMurdoch Advice](https://www.murdoch.edu.au/mymurdoch/support-advice/mymurdoch-advice)\n\
     [Academic Contacts](https://www.murdoch.edu.au/contacts/academic/)')
 resourcesEmbed.add_field(name='_ _', value='_ _', inline=False) # Gap between resources sections
