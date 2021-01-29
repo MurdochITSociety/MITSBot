@@ -111,7 +111,11 @@ def checkURL(url, file, otherFile):
     newDeals = []
 
     # Retrieve new deals and extract their information
-    data = requests.get(url)
+    try:
+        data = requests.get(url)
+    except:
+        print ("\nAn error occured.")
+        return newDeals
     html = BeautifulSoup(data.text, 'html.parser')
     rawPosts = html.select('div[class^="node node-ozbdeal node-teaser"]')
     rawTitles = html.select('h2.title')
@@ -160,21 +164,19 @@ def checkURL(url, file, otherFile):
       
 @tasks.loop(minutes=2)
 async def checkForDeals():
-    dealEmbeds = CheckURL('https://www.ozbargain.com.au/cat/computing', 'computing.txt', 'electronics.txt')
+    dealEmbeds = checkURL('https://www.ozbargain.com.au/cat/computing', 'computing.txt', 'electronics.txt')
     print ("Checked for new computing deals.")
     for embedVar in dealEmbeds:
         await bargainChannel.send(embed=embedVar)
     await asyncio.sleep(60)
 
-    dealEmbeds = CheckURL('https://www.ozbargain.com.au/cat/electrical-electronics', 'electronics.txt', 'computing.txt')
+    dealEmbeds = checkURL('https://www.ozbargain.com.au/cat/electrical-electronics', 'electronics.txt', 'computing.txt')
     print ("Checked for new electronics deals.")
     for embedVar in dealEmbeds:
         await bargainChannel.send(embed=embedVar)
 
 def getBdays():
-    f = open("birthdays.txt", "r")
-    birthdays = f.readlines()
-    f.close()
+    birthdays = getFileLines("birthdays.txt")
     return birthdays
   
 def getTodaysBirthdays():
