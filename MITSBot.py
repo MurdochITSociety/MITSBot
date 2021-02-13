@@ -24,6 +24,10 @@ helpEmbed.add_field(name='<:birthday:779924273950490646> __**Birthday Commands**
     `m!addbday [Month] [Day]` Register a birthday. E.g. m!addbday January 1\n\
     `m!delbday` Remove a birthday.\n\
     `m!viewbday` View today\'s birthdays.', inline=False)
+helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
+helpEmbed.add_field(name='<:dog:810097516409257984> __**Animal Commands**__', value=' \
+    `m!dog` Doggo!\n\
+    `m!cat` Cat.', inline=False)
     
 # Create Murdoch resources embed
 resourcesEmbed = discord.Embed(
@@ -290,18 +294,15 @@ async def on_message(message):
         command = message.content.lower()[2:]
         
         # Check what the command is, and respond accordingly
-        if (command.startswith("addbday")):
+        if (command.startswith("addbday") or command.startswith("addbirthday") or command.startswith("newbday") or command.startswith("newbirthday")):
             await addBday(message)
-            return
-        elif (command.startswith("delbday")):
+        elif (command.startswith("delbday") or command.startswith("deletebday") or command.startswith("delbirthday") or command.startswith("deletebirthday")):
             await delBday(message)
-            return
-        elif (command.startswith("help")):
+        elif (command.startswith("help") or command.startswith("h ") or command.startswith("commands")):
             await message.channel.send(embed=helpEmbed)
-        elif (command.startswith("viewbday")):
+        elif (command.startswith("viewbday") or command.startswith("todaysbdays") or command.startswith("viewbirthdays") or command.startswith("todaysbirthdays")):
             await viewBday(message)
-            return
-        elif (command.startswith("resources")):
+        elif (command.startswith("resources") or command.startswith("links") or command.startswith("resource")):
             await message.channel.send(embed=resourcesEmbed)
         elif (command.startswith("dog") or command.startswith("doggo") or command.startswith("pupper") or command.startswith("pup") or command.startswith("woof")):
             await sendDog(message)
@@ -341,3 +342,4 @@ async def on_ready():
     dailyBirthdays.start()
 
 client.run(token)
+
