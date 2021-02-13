@@ -265,6 +265,19 @@ async def sendDog(message):
         )
         dogEmbed.set_image(url=data[0]['url'])
         await message.channel.send(embed=dogEmbed)
+        
+async def sendCat(message):
+        data = requests.get('https://api.thecatapi.com/v1/images/search').json()
+        try:
+            title = 'Here is a ' + data[0]['breeds'][0]['name'] + '.'
+        except:
+            title = 'Here is a cat.'
+        catEmbed = discord.Embed(
+            title = title,
+            colour = discord.Colour(0xbe2a36)
+        )
+        catEmbed.set_image(url=data[0]['url'])
+        await message.channel.send(embed=catEmbed)
 
 @client.event
 async def on_message(message):
@@ -292,6 +305,8 @@ async def on_message(message):
             await message.channel.send(embed=resourcesEmbed)
         elif (command.startswith("dog") or command.startswith("doggo") or command.startswith("pupper") or command.startswith("pup") or command.startswith("woof")):
             await sendDog(message)
+        elif (command.startswith("cat") or command.startswith("feline") or command.startswith("pussy") or command.startswith("kitty") or command.startswith("puss")):
+            await sendCat(message)
         else:
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.")
 
