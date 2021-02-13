@@ -3,11 +3,12 @@ import os
 import datetime
 import discord
 import requests
+import json
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
-token = 'xxx'
-os.chdir('xxx')
+token = xxx
+os.chdir(xxx)
 client = discord.Client()
 
 # Create MITS Bot help embed
@@ -252,6 +253,19 @@ async def viewBday(message):
     else:
         await message.channel.send("It's nobody\'s birthday today :(")
 
+async def sendDog(message):
+        data = requests.get('https://api.thedogapi.com/v1/images/search').json()
+        try:
+            title = 'Here is a ' + data[0]['breeds'][0]['name'] + '.'
+        except:
+            title = 'Here is a dog.'
+        dogEmbed = discord.Embed(
+            title = title,
+            colour = discord.Colour(0xbe2a36)
+        )
+        dogEmbed.set_image(url=data[0]['url'])
+        await message.channel.send(embed=dogEmbed)
+
 @client.event
 async def on_message(message):
     # Check if message came from bot
@@ -276,6 +290,8 @@ async def on_message(message):
             return
         elif (command.startswith("resources")):
             await message.channel.send(embed=resourcesEmbed)
+        elif (command.startswith("dog") or command.startswith("doggo") or command.startswith("pupper") or command.startswith("pup") or command.startswith("woof")):
+            await sendDog(message)
         else:
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.")
 
