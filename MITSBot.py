@@ -4,12 +4,16 @@ import datetime
 import discord
 import requests
 import json
+import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
 token = xxx
 os.chdir(xxx)
 client = discord.Client()
+
+bingAPIKey = xxx
+animals = ["aardvark","albatross","alligator","alpaca","ant","anteater","antelope","ape","armadillo","donkey","baboon","badger","barracuda","bat","bear","beaver","bee","bison","boar","buffalo","butterfly","camel","capybara","caribou","cassowary","cat","caterpillar","cattle","chamois","cheetah","chicken","chimpanzee","chinchilla","chough","clam","cobra","cockroach","cod","cormorant","coyote","crab","crane","crocodile","crow","curlew","deer","dinosaur","dog","dogfish","dolphin","dotterel","dove","dragonfly","duck","dugong","dunlin","eagle","echidna","eel","eland","elephant","elk","emu","falcon","ferret","finch","fish","flamingo","fly","fox","frog","gaur","gazelle","gerbil","giraffe","gnat","gnu","goat","goldfinch","goldfish","goose","gorilla","goshawk","grasshopper","grouse","guanaco","gull","hamster","hare","hawk","hedgehog","heron","herring","hippopotamus","hornet","horse","human","hummingbird","hyena","ibex","ibis","jackal","jaguar","jay","jellyfish","kangaroo","kingfisher","koala","kookabura","kouprey","kudu","lapwing","lark","lemur","leopard","lion","llama","lobster","locust","loris","louse","lyrebird","magpie","mallard","manatee","mandrill","mantis","marten","meerkat","mink","mole","mongoose","monkey","moose","mosquito","mouse","mule","narwhal","newt","nightingale","octopus","okapi","opossum","oryx","ostrich","otter","owl","oyster","panther","parrot","partridge","peafowl","pelican","penguin","pheasant","pig","pigeon","pony","porcupine","porpoise","quail","quelea","quetzal","rabbit","raccoon","rail","ram","rat","raven","red deer","red panda","reindeer","rhinoceros","rook","salamander","salmon","sand dollar","sandpiper","sardine","scorpion","seahorse","seal","shark","sheep","shrew","skunk","snail","snake","sparrow","spider","spoonbill","squid","squirrel","starling","stingray","stinkbug","stork","swallow","swan","tapir","tarsier","termite","tiger","toad","trout","turkey","turtle","viper","vulture","wallaby","walrus","wasp","weasel","whale","wildcat","wolf","wolverine","wombat","woodcock","woodpecker","worm","wren","yak","zebra"]
 
 # Create MITS Bot help embed
 helpEmbed = discord.Embed(
@@ -283,6 +287,24 @@ async def sendCat(message):
         catEmbed.set_image(url=data[0]['url'])
         await message.channel.send(embed=catEmbed)
 
+async def sendAnimal(message):
+        randomPage = random.randint(0, 499)
+        searchURL = "https://api.bing.microsoft.com/v7.0/images/search"
+        searchTerm = message.content[message.content.find(" ")+1:]
+        headers = {"Ocp-Apim-Subscription-Key" : bingAPIKey}
+        params  = {"q": searchTerm, "imageType": "photo", "safeSearch": "Strict", "count": "1", "offset": str(randomPage)}
+        try:
+            response = requests.get(searchURL, headers=headers, params=params)
+            data = response.json()
+            animalEmbed = discord.Embed(
+                title = "Here is a " + searchTerm + ".",
+                colour = discord.Colour(0xbe2a36)
+            )
+            animalEmbed.set_image(url=data["value"][0]["thumbnailUrl"])
+            await message.channel.send(embed=animalEmbed)
+        except:
+            await message.channel.send("Sorry, the image retrieval failed.")
+
 @client.event
 async def on_message(message):
     # Check if message came from bot
@@ -308,6 +330,11 @@ async def on_message(message):
             await sendDog(message)
         elif (command.startswith("cat") or command.startswith("feline") or command.startswith("pussy") or command.startswith("kitty") or command.startswith("puss")):
             await sendCat(message)
+        elif (command.startswith("animal ") or command.startswith("an ")):
+            if (command[command.find(" ")+1:] in animals):
+                await sendAnimal(message)
+            else:
+                await message.channel.send("Sorry, that animal cannot be found.")
         else:
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.")
 
