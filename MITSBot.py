@@ -13,7 +13,9 @@ os.chdir(xxx)
 client = discord.Client()
 
 bingAPIKey = xxx
-animals = ["aardvark","albatross","alligator","alpaca","ant","anteater","antelope","ape","armadillo","donkey","baboon","badger","bat","bear","beaver","bee","bison","boar","buffalo","bull","butterfly","camel","capybara","caracal","caribou","cassowary","cat","caterpillar","catfish","cattle","chamois","cheetah","chicken","chimpanzee","chinchilla","chough","clam","cobra","cockroach","cod","cormorant","cow","coyote","crab","crane","crocodile","crow","curlew","deer","dog","dogfish","dolphin","dotterel","dove","dragonfly","duck","dugong","dunlin","eagle","echidna","eel","eland","elephant","elk","emu","falcon","ferret","finch","fish","flamingo","fox","frog","gaur","gazelle","gerbil","giraffe","gnat","gnu","goat","goldfinch","goldfish","goose","gorilla","goshawk","grasshopper","grouse","guanaco","gull","hamster","hare","hawk","hedgehog","heron","herring","hippopotamus","hornet","horse","hummingbird","hyena","ibex","ibis","jackal","jaguar","jay","jellyfish","kangaroo","kingfisher","kiwi","koala","kookabura","kouprey","kudu","ladybug","lapwing","lark","lemur","leopard","lion","lizard","llama","lobster","locust","loris","louse","lyrebird","magpie","mallard","manatee","mandrill","mantis","marten","meerkat","mink","mongoose","monkey","moose","mouse","mule","naked mole rat","narwhal","newt","nightingale","octopus","okapi","opossum","oryx","ostrich","otter","owl","oyster","pangolin","panther","parrot","partridge","peafowl","pelican","penguin","pheasant","pig","pigeon","platypus","pony","porcupine","porpoise","quail","quelea","quetzal","quokka","rabbit","raccoon","ram","rat","raven","red panda","reindeer","rhinoceros","rook","salamander","salmon","sand dollar","sandpiper","sardine","scorpion","seahorse","seal","sea sponge","shark","sheep","shrew","skunk","sloth","snail","snake","sparrow","sphynx","spider","spoonbill","squid","squirrel","starfish","starling","stingray","stinkbug","stork","swallow","swan","tapir","tarsier","termite","tiger","toad","trout","turkey","turtle","viper","vulture","wallaby","walrus","wasp","weasel","whale","wildcat","wolf","wombat","woodcock","woodpecker","worm","wren","yak","zebra"]
+animals = ["aardvark","albatross","alligator","alpaca","ant","anteater","antelope","ape","armadillo","baboon","badger","bass","bat","bear","beaver","bee","bison","blue whale","boar","buffalo","bull","butterfly","camel","capybara","caracal","caribou","cassowary","cat","caterpillar","catfish","cattle","chamois","cheetah","chicken","chimpanzee","chinchilla","chough","clam","cobra","cockatiel","cockroach","cod","cormorant","cow","coyote","crab","crane","crocodile","crow","curlew","deer","dog","dogfish","dolphin","donkey","dotterel","dove","dragonfly","duck","dugong","dunlin","eagle","echidna","eel","eland","elephant","elk","emu","falcon","ferret","finch","fish","flamingo","fox","frog","gaur","gazelle","gerbil","giraffe","gnat","gnu","goat","goldfinch","goldfish","goose","gorilla","goshawk","grasshopper","grouse","guanaco","gull","hamster","hare","hawk","hedgehog","heron","herring","hippopotamus","horned lizard","hornet","horse","human","hummingbird","hyena","ibex","ibis","jackal","jaguar","jay","jellyfish","kangaroo","kingfisher","kiwi","koala","kookabura","kouprey","kudu","ladybug","lapwing","lark","lemur","leopard","lion","lizard","llama","lobster","locust","loris","louse","lyrebird","magpie","mallard","manatee","mandrill","mantis","marten","meerkat","mink","mongoose","monkey","moose","mouse","mule","naked mole rat","narwhal","newt","nightingale","octopus","okapi","opossum","oryx","ostrich","otter","owl","oyster","pangolin","panther","parrot","partridge","peafowl","pelican","penguin","pheasant","pig","pigeon","platypus","pony","porcupine","porpoise","quail","quelea","quetzal","quokka","rabbit","raccoon","ram","rat","raven","red panda","reindeer","rhinoceros","rook","salamander","salmon","sand dollar","sandpiper","sardine","scorpion","seahorse","seal","sea sponge","shag bird","shark","sheep","shrew","skunk","sloth","snail","snake","sparrow","sperm whale","sphynx","spider","spoonbill","squid","squirrel","starfish","starling","stingray","stinkbug","stork","sun conure","swallow","swan","tapir","tarsier","termite","tiger","tit bird","toad","trout","turkey","turtle","viper","vulture","wallaby","walrus","wasp","weasel","whale","wildcat","wolf","wombat","woodcock","woodpecker","worm","wren","yak","zebra"]
+animalFilter = " animal NOT hunt NOT catch NOT kill NOT hunting NOT game NOT gore NOT death NOT bite NOT bites NOT eat NOT eats NOT sad NOT gun NOT fight NOT fights NOT faceoff NOT blood NOT bleed NOT injured NOT disease NOT hurt NOT diseased NOT sick NOT pain NOT bloody NOT abuse NOT abused NOT treatment NOT wound NOT wounds"
+haroldImages = os.listdir(xxx)
 
 # Create MITS Bot help embed
 helpEmbed = discord.Embed(
@@ -29,10 +31,11 @@ helpEmbed.add_field(name='<:birthday:779924273950490646> __**Birthday Commands**
     `m!delbday` Remove a birthday.\n\
     `m!viewbday` View today\'s birthdays.', inline=False)
 helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
-helpEmbed.add_field(name='<:dog:810097516409257984> __**Animal Commands**__', value=' \
+helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', value=' \
     `m!animal [animal]` Any animal you want (almost).\n\
-    `m!dog` Doggo!\n\
-    `m!cat` Cat.', inline=False)
+    `m!dog` Pupper.\n\
+    `m!cat` Cat.\n\
+    `m!harold` Harold.', inline=False)
     
 # Create Murdoch resources embed
 resourcesEmbed = discord.Embed(
@@ -263,48 +266,51 @@ async def viewBday(message):
         await message.channel.send("It's nobody\'s birthday today :(")
 
 async def sendDog(message):
-        data = requests.get('https://api.thedogapi.com/v1/images/search').json()
-        try:
-            title = 'Here is a ' + data[0]['breeds'][0]['name'] + '.'
-        except:
-            title = 'Here is a dog.'
-        dogEmbed = discord.Embed(
-            title = title,
-            colour = discord.Colour(0xbe2a36)
-        )
-        dogEmbed.set_image(url=data[0]['url'])
-        await message.channel.send(embed=dogEmbed)
+    data = requests.get('https://api.thedogapi.com/v1/images/search').json()
+    try:
+        title = 'Here is a ' + data[0]['breeds'][0]['name'] + '.'
+    except:
+        title = 'Here is a dog.'
+    dogEmbed = discord.Embed(
+        title = title,
+        colour = discord.Colour(0xbe2a36)
+    )
+    dogEmbed.set_image(url=data[0]['url'])
+    await message.channel.send(embed=dogEmbed)
         
 async def sendCat(message):
-        data = requests.get('https://api.thecatapi.com/v1/images/search').json()
-        try:
-            title = 'Here is a ' + data[0]['breeds'][0]['name'] + '.'
-        except:
-            title = 'Here is a cat.'
-        catEmbed = discord.Embed(
-            title = title,
-            colour = discord.Colour(0xbe2a36)
-        )
-        catEmbed.set_image(url=data[0]['url'])
-        await message.channel.send(embed=catEmbed)
+    data = requests.get('https://api.thecatapi.com/v1/images/search').json()
+    try:
+        title = 'Here is a ' + data[0]['breeds'][0]['name'] + '.'
+    except:
+        title = 'Here is a cat.'
+    catEmbed = discord.Embed(
+        title = title,
+        colour = discord.Colour(0xbe2a36)
+    )
+    catEmbed.set_image(url=data[0]['url'])
+    await message.channel.send(embed=catEmbed)
 
-async def sendAnimal(message, i):
-        randomPage = random.randint(0, 199)
-        searchURL = "https://api.bing.microsoft.com/v7.0/images/search"
-        searchTerm = i + " animal NOT hunt NOT catch NOT kill NOT hunting NOT game NOT gore NOT death NOT bite NOT bites NOT eat NOT eats NOT sad NOT gun NOT fight NOT fights NOT faceoff NOT blood NOT bleed NOT injured NOT disease NOT hurt NOT diseased NOT sick NOT pain NOT bloody NOT abuse NOT abused NOT treatment NOT wound NOT wounds"
-        headers = {"Ocp-Apim-Subscription-Key" : bingAPIKey}
-        params  = {"q": searchTerm, "imageType": "photo", "safeSearch": "Strict", "count": "1", "offset": str(randomPage)}
-        try:
-            response = requests.get(searchURL, headers=headers, params=params)
-            data = response.json()
-            animalEmbed = discord.Embed(
-                title = "Here is a " + i + ".",
-                colour = discord.Colour(0xbe2a36)
-            )
-            animalEmbed.set_image(url=data["value"][0]["thumbnailUrl"])
-            await message.channel.send(embed=animalEmbed)
-        except:
-            await message.channel.send("Sorry, the image retrieval failed.")
+async def getImage(searchTerm):
+    randomPage = random.randint(0, 200)
+    searchURL = "https://api.bing.microsoft.com/v7.0/images/search"
+    headers = {"Ocp-Apim-Subscription-Key" : bingAPIKey}
+    params  = {"q": searchTerm, "safeSearch": "Strict", "count": "1", "offset": str(randomPage)}
+    try:
+        response = requests.get(searchURL, headers=headers, params=params)
+        data = response.json()
+        url = data["value"][0]["thumbnailUrl"]
+        return url
+    except:
+        return
+            
+async def sendImageEmbed(message, title, imageURL):
+    embed = discord.Embed(
+        title = title,
+        colour = discord.Colour(0xbe2a36)
+    )
+    embed.set_image(url=imageURL)
+    await message.channel.send(embed=embed)
 
 @client.event
 async def on_message(message):
@@ -331,12 +337,30 @@ async def on_message(message):
             await sendDog(message)
         elif (command.startswith("cat") or command.startswith("feline") or command.startswith("kitty") or command.startswith("puss")):
             await sendCat(message)
-        elif (command.startswith("animal ") or command.startswith("an ")):
-            for i in animals:
-                if (i.startswith(command[command.find(" ")+1:])):
-                    await sendAnimal(message, i)
-                    return
-            await message.channel.send("Sorry, that animal cannot be found.")
+        elif (command.startswith("an")):
+            try:
+                if (command == "an"):
+                    animal = animals[random.randint(0,len(animals)-1)]
+                    imageURL = await getImage(animal + animalFilter)
+                    await sendImageEmbed(message, "Here is a " + animal + ".", imageURL)
+                else:
+                    for i in animals:
+                        if (i.startswith(command[command.find(" ")+1:])):
+                            imageURL = await getImage(i + animalFilter)
+                            await sendImageEmbed(message, "Here is a " + i + ".", imageURL)
+                            return
+                    await message.channel.send("Sorry, that animal cannot be found.")
+            except Exception as e:
+                print(e)
+                await message.channel.send("Sorry, the image retrieval failed.")
+        elif (command.startswith("harold")):
+            randomHarold = random.randint(0, len(haroldImages)-1)
+            haroldEmbed = discord.Embed(
+                title = "Here's Harold",
+                colour = discord.Colour(0xbe2a36)
+            )
+            haroldEmbed.set_image(url="attachment://"+haroldImages[randomHarold])
+            await message.channel.send(file=discord.File("Harold/"+haroldImages[randomHarold]), embed=haroldEmbed)
         else:
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.")
 
@@ -371,4 +395,3 @@ async def on_ready():
     dailyBirthdays.start()
 
 client.run(token)
-
