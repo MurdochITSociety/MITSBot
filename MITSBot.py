@@ -13,9 +13,16 @@ os.chdir(xxx)
 client = discord.Client()
 
 bingAPIKey = xxx
-animals = ["aardvark","albatross","alligator","alpaca","ant","anteater","antelope","ape","armadillo","baboon","badger","bass","bat","bear","beaver","bee","bison","blue whale","boar","buffalo","bull","butterfly","camel","capybara","caracal","caribou","cassowary","cat","caterpillar","catfish","cattle","chamois","cheetah","chicken","chimpanzee","chinchilla","chough","clam","cobra","cockatiel","cockroach","cod","cormorant","cow","coyote","crab","crane","crocodile","crow","curlew","deer","dog","dogfish","dolphin","donkey","dotterel","dove","dragonfly","duck","dugong","dunlin","eagle","echidna","eel","eland","elephant","elk","emu","falcon","ferret","finch","fish","flamingo","fox","frog","gaur","gazelle","gerbil","giraffe","gnat","gnu","goat","goldfinch","goldfish","goose","gorilla","goshawk","grasshopper","grouse","guanaco","gull","hamster","hare","hawk","hedgehog","heron","herring","hippopotamus","horned lizard","hornet","horse","human","hummingbird","hyena","ibex","ibis","jackal","jaguar","jay","jellyfish","kangaroo","kingfisher","kiwi","koala","kookabura","kouprey","kudu","ladybug","lapwing","lark","lemur","leopard","lion","lizard","llama","lobster","locust","loris","louse","lyrebird","magpie","mallard","manatee","mandrill","mantis","marten","meerkat","mink","mongoose","monkey","moose","mouse","mule","naked mole rat","narwhal","newt","nightingale","octopus","okapi","opossum","oryx","ostrich","otter","owl","oyster","pangolin","panther","parrot","partridge","peafowl","pelican","penguin","pheasant","pig","pigeon","platypus","pony","porcupine","porpoise","quail","quelea","quetzal","quokka","rabbit","raccoon","ram","rat","raven","red panda","reindeer","rhinoceros","rook","salamander","salmon","sand dollar","sandpiper","sardine","scorpion","seahorse","seal","sea sponge","shag bird","shark","sheep","shrew","skunk","sloth","snail","snake","sparrow","sperm whale","sphynx","spider","spoonbill","squid","squirrel","starfish","starling","stingray","stinkbug","stork","sun conure","swallow","swan","tapir","tarsier","termite","tiger","tit bird","toad","trout","turkey","turtle","viper","vulture","wallaby","walrus","wasp","weasel","whale","wildcat","wolf","wombat","woodcock","woodpecker","worm","wren","yak","zebra"]
-animalFilter = " animal NOT hunt NOT catch NOT kill NOT hunting NOT game NOT gore NOT death NOT bite NOT bites NOT eat NOT eats NOT sad NOT gun NOT fight NOT fights NOT faceoff NOT blood NOT bleed NOT injured NOT disease NOT hurt NOT diseased NOT sick NOT pain NOT bloody NOT abuse NOT abused NOT treatment NOT wound NOT wounds"
+animals = ["aardvark","albatross","alligator","alpaca","ant","anteater","antelope","ape","armadillo","baboon","badger","bass","bat","bear","beaver","bee","bison","blue whale","boar","buffalo","bull","butterfly","camel","capybara","caracal","caribou","cassowary","cat","caterpillar","catfish","cattle","chamois","cheetah","chicken","chimpanzee","chinchilla","chough","clam","cobra","cockatiel","cockroach","cod","cormorant","cow","coyote","crab","crane","crocodile","crow","curlew","deer","dog","dogfish","dolphin","donkey","dotterel","dove","dragonfly","duck","dugong","dunlin","eagle","echidna","eel","eland","elephant","elk","emu","falcon","ferret","finch","fish","flamingo","fox","frog","gaur","gazelle","gerbil","giraffe","gnat","gnu","goat","goldfinch","goldfish","goose","gorilla","goshawk","grasshopper","grouse","guanaco","gull","hamster","hare","hawk","hedgehog","heron","herring","hippopotamus","horned lizard","hornet","horse","hummingbird","hyena","ibex","ibis","jackal","jaguar","jay","jellyfish","kangaroo","kingfisher","kiwi","koala","kookabura","kouprey","kudu","ladybug","lapwing","lark","lemur","leopard","lion","lizard","llama","lobster","locust","loris","louse","lyrebird","magpie","mallard","manatee","mandrill","mantis","marten","meerkat","mink","mongoose","monkey","moose","mouse","mule","naked mole rat","narwhal","newt","nightingale","octopus","okapi","opossum","oryx","ostrich","otter","owl","oyster","pangolin","panther","parrot","partridge","peafowl","pelican","penguin","pheasant","pig","pigeon","platypus","pony","porcupine","porpoise","quail","quelea","quetzal","quokka","rabbit","raccoon","ram","rat","raven","red panda","reindeer","rhinoceros","rook","salamander","salmon","sand dollar","sandpiper","sardine","scorpion","seahorse","seal","sea sponge","shag bird","shark","sheep","shrew","skunk","sloth","snail","snake","sparrow","sperm whale","sphynx","spider","spoonbill","squid","squirrel","starfish","starling","stingray","stinkbug","stork","sun conure","swallow","swan","tapir","tarsier","termite","tiger","tit bird","toad","trout","turkey","turtle","viper","vulture","wallaby","walrus","wasp","weasel","whale","wildcat","wolf","wombat","woodcock","woodpecker","worm","wren","yak","zebra"]
+animalFilter = " animal NOT hunt NOT catch NOT kill NOT hunting NOT game NOT gore NOT death NOT bite NOT bites NOT eat NOT eats NOT sad NOT gun NOT fight NOT fights NOT faceoff NOT blood NOT bleed NOT injured NOT disease NOT hurt NOT diseased NOT sick NOT pain NOT bloody NOT abuse NOT abused NOT treatment NOT wound NOT wounds NOT mating NOT mate NOT sex"
 haroldImages = os.listdir(xxx)
+
+motionChannelID = xxx
+trashcanChannelID = xxx
+bargainChannelID = xxx
+announcementsChannelID = xxx
+mitsServerID = xxx
+moderatorRoleID = xxx
 
 # Create MITS Bot help embed
 helpEmbed = discord.Embed(
@@ -36,7 +43,6 @@ helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', val
     `m!dog` Pupper.\n\
     `m!cat` Cat.\n\
     `m!harold` Harold.', inline=False)
-    
 # Create Murdoch resources embed
 resourcesEmbed = discord.Embed(
                 title = '<:student:780271578608828437><:student:780271578608828437> Murdoch Resources <:student:780271578608828437><:student:780271578608828437>',
@@ -311,6 +317,16 @@ async def sendImageEmbed(message, title, imageURL):
     )
     embed.set_image(url=imageURL)
     await message.channel.send(embed=embed)
+    
+async def createAnnouncementPropEmbed(description, author, announcement):
+    announcementPropEmbed = discord.Embed(
+        title = "Announcement Proposal",
+        description = description,
+        colour = discord.Colour(0xbe2a36)
+    )
+    announcementPropEmbed.add_field(name='Announcement Author', value=author)
+    announcementPropEmbed.add_field(name='Announcement Message ID', value=announcement)
+    return announcementPropEmbed
 
 @client.event
 async def on_message(message):
@@ -337,6 +353,15 @@ async def on_message(message):
             await sendDog(message)
         elif (command.startswith("cat") or command.startswith("feline") or command.startswith("kitty") or command.startswith("puss")):
             await sendCat(message)
+        elif (command.startswith("announce ")):
+            if (message.channel.id != motionChannelID):
+                await message.channel.send("That's the wrong channel for proposing announcements. Please use #motions.", delete_after=10)
+            else:
+                description = "@everyone The above announcement has been proposed. Please react to this message with a <:thumbsup:825609718181265490> to approve it, or a <:thumbsdown:825609718181265490> to deny it.\n\n_ _"
+                announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(message.author.id) + ">", str(message.id))
+                proposal = await message.channel.send(embed=announcementPropEmbed)
+                await proposal.add_reaction("👍")
+                await proposal.add_reaction("👎")
         elif (command.startswith("an")):
             try:
                 if (command == "an"):
@@ -349,10 +374,10 @@ async def on_message(message):
                             imageURL = await getImage(i + animalFilter)
                             await sendImageEmbed(message, "Here is a " + i + ".", imageURL)
                             return
-                    await message.channel.send("Sorry, that animal cannot be found.")
+                    await message.channel.send("Sorry, that animal cannot be found.", delete_after=10)
             except Exception as e:
                 print(e)
-                await message.channel.send("Sorry, the image retrieval failed.")
+                await message.channel.send("Sorry, the image retrieval failed.", delete_after=10)
         elif (command.startswith("harold")):
             randomHarold = random.randint(0, len(haroldImages)-1)
             haroldEmbed = discord.Embed(
@@ -362,7 +387,72 @@ async def on_message(message):
             haroldEmbed.set_image(url="attachment://"+haroldImages[randomHarold])
             await message.channel.send(file=discord.File("Harold/"+haroldImages[randomHarold]), embed=haroldEmbed)
         else:
-            await message.channel.send("That's not a valid command. Try using m!help to find the right command.")
+            await message.channel.send("That's not a valid command. Try using m!help to find the right command.", delete_after=10)
+
+async def countAnnouncementReactions(reaction, user):
+    # Test if the message being reacted to is an announcement proposal, and check if the reacting user is this bot
+    embed = ""
+    try:
+        embed = reaction.message.embeds[0].to_dict()
+        if (embed["title"] != "Announcement Proposal" or embed["description"].endswith("has passed.\n\n_ _") or embed["description"].endswith("has failed.\n\n_ _") or user == client.user):
+            return
+    except:
+        return
+    
+    # Test if the reacting user is the announcement proposer, and delete the reaction if so
+    proposer = client.get_user(int(embed["fields"][0]["value"][2:-1])) # Get user object for user that proposed announcement
+    if (user == proposer):
+        await reaction.message.remove_reaction(reaction.emoji, user)
+        return
+    
+    originalDescription = "The above announcement has been proposed. Please react to this message with a <:thumbsup:825609718181265490> to approve it, or a <:thumbsdown:825609718181265490> to deny it.\n\n"
+    moderatorCount = len(client.get_guild(mitsServerID).get_role(role_id=moderatorRoleID).members) - 1
+    requiredVote = int(round((moderatorCount) * 0.3))
+    approvalRating = 0
+    forVotes = []
+    againstVotes = []
+
+    for reaction in reaction.message.reactions:
+        if (reaction.emoji == "👍"):
+            approvalRating = approvalRating + reaction.count - 1
+            async for user in reaction.users():
+                forVotes.append(user)
+        if (reaction.emoji == "👎"):
+            approvalRating = approvalRating - reaction.count + 1
+            async for user in reaction.users():
+                againstVotes.append(user)
+    
+    # Calculate the total number of voters, minus the bot (duplicates are removed from the list of voter users)
+    numberOfVoters = len(list(set(forVotes + againstVotes))) - 1
+
+    if (approvalRating >= requiredVote):
+        try:
+            announcement = await motionChannel.fetch_message(int(embed["fields"][1]["value"]))
+            announcement = announcement.content[11:]
+            await announcementsChannel.send(announcement)
+            description = originalDescription + "The proposed announcement has passed.\n\n_ _"
+            announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(proposer.id) + ">", embed["fields"][1]["value"])
+            await reaction.message.edit(embed = announcementPropEmbed)
+        except:
+            description = originalDescription + "The original announcement cannot be found. The proposed announcement has failed.\n\n_ _"
+            announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(proposer.id) + ">", embed["fields"][1]["value"])
+            await reaction.message.edit(embed = announcementPropEmbed)
+    elif ((moderatorCount - numberOfVoters) + approvalRating < requiredVote):
+        description = originalDescription + "The required approval rating can no longer be reached. The proposed announcement has failed.\n\n_ _"
+        announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(proposer.id) + ">", embed["fields"][1]["value"])
+        await reaction.message.edit(embed = announcementPropEmbed)
+    else:
+        description = originalDescription + "The approval rating is currently " + str(approvalRating) + ". It must reach " + str(requiredVote) + " for the proposed announcement to pass.\n\n_ _"
+        announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(proposer.id) + ">", embed["fields"][1]["value"])
+        await reaction.message.edit(embed = announcementPropEmbed)
+
+@client.event
+async def on_reaction_add(reaction, user):
+    await countAnnouncementReactions(reaction, user)
+
+@client.event
+async def on_reaction_remove(reaction, user):
+    await countAnnouncementReactions(reaction, user)
 
 # Check birthdays file each day, and post if any are on the current date
 @tasks.loop(hours=24)
@@ -378,8 +468,12 @@ async def on_ready():
     
     global trashcanChannel
     global bargainChannel
-    trashcanChannel = client.get_channel(xxx)
-    bargainChannel = client.get_channel(xxx)
+    global announcementsChannel
+    global motionChannel
+    trashcanChannel = client.get_channel(trashcanChannelID)
+    bargainChannel = client.get_channel(bargainChannelID)
+    announcementsChannel = client.get_channel(announcementsChannelID)
+    motionChannel = client.get_channel(motionChannelID)
     
     checkForDeals.start()
     
