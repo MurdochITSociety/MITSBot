@@ -390,6 +390,7 @@ async def on_message(message):
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.", delete_after=10)
 
 async def countAnnouncementReactions(reaction, user):
+    await asyncio.sleep(1.5) # Wait 1.5 seconds to make sure Discord has updated the vote count after the previous reaction
     # Test if the message being reacted to is an announcement proposal, and check if the reacting user is this bot
     embed = ""
     try:
