@@ -390,7 +390,6 @@ async def on_message(message):
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.", delete_after=10)
 
 async def countAnnouncementReactions(reaction, user):
-    await asyncio.sleep(1.5) # Wait 1.5 seconds to make sure Discord has updated the vote count after the previous reaction
     # Test if the message being reacted to is an announcement proposal, and check if the reacting user is this bot
     embed = ""
     try:
@@ -426,7 +425,7 @@ async def countAnnouncementReactions(reaction, user):
     # Calculate the total number of voters, minus the bot (duplicates are removed from the list of voter users)
     numberOfVoters = len(list(set(forVotes + againstVotes))) - 1
 
-    if (approvalRating >= requiredVote):
+    if (approvalRating == requiredVote):
         try:
             announcement = await motionChannel.fetch_message(int(embed["fields"][1]["value"]))
             announcement = announcement.content[11:]
@@ -442,10 +441,14 @@ async def countAnnouncementReactions(reaction, user):
         description = originalDescription + "The required approval rating can no longer be reached. The proposed announcement has failed.\n\n_ _"
         announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(proposer.id) + ">", embed["fields"][1]["value"])
         await reaction.message.edit(embed = announcementPropEmbed)
-    else:
+    # The following elif can't be an else, because if someone upvotes immediately after the proposal passes (but before Discord has time to update the message),
+    # the function would reach this point again. So this elif prevents the message from being updated again once the vote has already passed.
+    elif ((moderatorCount - numberOfVoters) + approvalRating >= requiredVote):
         description = originalDescription + "The approval rating is currently " + str(approvalRating) + ". It must reach " + str(requiredVote) + " for the proposed announcement to pass.\n\n_ _"
         announcementPropEmbed = await createAnnouncementPropEmbed(description, "<@" + str(proposer.id) + ">", embed["fields"][1]["value"])
         await reaction.message.edit(embed = announcementPropEmbed)
+    else:
+        return
 
 @client.event
 async def on_reaction_add(reaction, user):
