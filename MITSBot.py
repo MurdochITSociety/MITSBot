@@ -8,14 +8,13 @@ import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
-try:
-    configFile = open('config.json')
+os.chdir(xxx)
+
+config = ""
+with open('./config.json') as configFile:
     config = json.load(configFile)
-except:
-    print('\nCould not load config file')
 
 token = config['token']
-os.chdir(config['Directories']['workingDir'])
 client = discord.Client()
 
 bingAPIKey = config['bingKey']
@@ -26,7 +25,7 @@ haroldImages = os.listdir(config['Directories']['ImagesDir'])
 motionChannelID = config['Channels']['motionChannel']
 trashcanChannelID = config['Channels']['trashcanChannel']
 bargainChannelID = config['Channels']['bargainChannel']
-announcementsChannelID = config['Channels']['annoucementsChannel']
+announcementsChannelID = config['Channels']['announcementsChannel']
 mitsServerID = config['serverID']
 moderatorRoleID = config['Roles']['moderatorRole']
 
