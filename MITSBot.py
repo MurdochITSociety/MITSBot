@@ -8,8 +8,6 @@ import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
-# Suggestion - get these values from a config file?
-
 try:
     configFile = open('config.json')
     config = json.load(configFile)
