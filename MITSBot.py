@@ -302,10 +302,10 @@ async def sendCat(message):
     await message.channel.send(embed=catEmbed)
 
 async def sendCatFact(message):
-    data = requests.get('https://catfact.ninja/fact').json()
     title = 'Here is a cat fact!'
     desc = ""
     try:
+        data = requests.get('https://catfact.ninja/fact').json()
         desc = data.fact
     except:
         desc = "Could not get a cat fact!"
