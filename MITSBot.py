@@ -303,15 +303,17 @@ async def sendCat(message):
 
 async def sendCatFact(message):
     data = requests.get('https://catfact.ninja/fact').json()
+    title = 'Here is a cat fact!'
+    desc = ""
     try:
-        title = 'Here is a cat fact!'
+        desc = data.fact
     except:
-        return
+        desc = "Could not get a cat fact!"
 
     catFactEmbed = discord.Embed(
         title = title,
         colour = discord.Colour(MITS_COLOR),
-        description = data.fact
+        description = desc
     )
     await message.channel.send(embed=catFactEmbed)
 
