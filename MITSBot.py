@@ -306,7 +306,7 @@ async def sendCatFact(message):
     desc = ""
     try:
         data = requests.get('https://catfact.ninja/fact').json()
-        desc = data.fact
+        desc = data['fact']
     except:
         desc = "Could not get a cat fact!"
 
