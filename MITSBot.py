@@ -44,7 +44,7 @@ helpEmbed.add_field(name='<:birthday:779924273950490646> __**Birthday Commands**
     `m!viewbday` View today\'s birthdays. ', inline=False)
 
 helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
-helpEmbed.add_field(name='<:book:> __**Fact Commands**__', value=' \
+helpEmbed.add_field(name=':book: __**Fact Commands**__', value=' \
     `m!catfact` Get a cool cat fact!\n\
     ', inline=False)
 
