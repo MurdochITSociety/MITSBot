@@ -8,7 +8,8 @@ import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
-os.chdir(xxx)
+# Set working directory to directory of Python script
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 config = ""
 with open('./config.json') as configFile:
