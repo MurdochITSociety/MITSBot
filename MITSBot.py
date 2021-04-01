@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 config = ""
-with open('./config.json') as configFile:
+with open('config.json', encoding='utf-8') as configFile:
     config = json.load(configFile)
 
 token = config['token']
@@ -21,7 +21,9 @@ client = discord.Client()
 bingAPIKey = config['bingKey']
 animals = config['animals']
 animalFilter = config['animalsFilter']
+
 haroldImages = os.listdir(config['Directories']['ImagesDir'])
+javaFacts = config['javaFacts']
 
 motionChannelID = config['Channels']['motionChannel']
 trashcanChannelID = config['Channels']['trashcanChannel']
@@ -51,7 +53,7 @@ helpEmbed.add_field(name='<:birthday:779924273950490646> __**Birthday Commands**
 helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
 helpEmbed.add_field(name=':book: __**Fact Commands**__', value=' \
     `m!catfact` Get a cool cat fact!\n\
-    ', inline=False)
+    `m!javafact` Get a cool fact about Java! ', inline=False)
 
 helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
 helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', value=' \
@@ -315,6 +317,14 @@ async def sendCat(message):
     catEmbed.set_image(url=data[0]['url'])
     await message.channel.send(embed=catEmbed)
 
+async def sendTextEmbed(message, title, description):
+    textEmbed = discord.Embed(
+        title = title,
+        colour = discord.Colour(MITS_COLOR),
+        description = description
+    )
+    await message.channel.send(embed=textEmbed)
+
 async def sendCatFact(message):
     title = 'Here is a cat fact!'
     desc = ""
@@ -323,13 +333,13 @@ async def sendCatFact(message):
         desc = data['fact']
     except:
         desc = "Could not get a cat fact!"
-
-    catFactEmbed = discord.Embed(
-        title = title,
-        colour = discord.Colour(MITS_COLOR),
-        description = desc
-    )
-    await message.channel.send(embed=catFactEmbed)
+    
+    sendTextEmbed(message, title, desc)
+    
+async def sendJavaFact(message):
+    title = 'Here is a fact about Java!'
+    desc = javaFacts[random.randint(0,len(javaFacts)-1)]
+    await sendTextEmbed(message, title, desc)
 
 async def getImage(searchTerm):
     randomPage = random.randint(0, 200)
@@ -383,6 +393,8 @@ async def on_message(message):
             await viewBday(message)
         elif (command.startswith("resources") or command.startswith("links") or command.startswith("resource")):
             await message.channel.send(embed=resourcesEmbed)
+        elif (command.startswith("javafact") or command.startswith("jfact")):
+            await sendJavaFact(message)
         elif (command.startswith("dog") or command.startswith("doggo") or command.startswith("pupper") or command.startswith("pup") or command.startswith("woof")):
             await sendDog(message)
         elif (command.startswith("catfact") or command.startswith("felinefact") or command.startswith("kittyfact")):
