@@ -8,6 +8,7 @@ import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
+# Suggestion - get these values from a config file?
 token = xxx
 os.chdir(xxx)
 client = discord.Client()
@@ -24,10 +25,13 @@ announcementsChannelID = xxx
 mitsServerID = xxx
 moderatorRoleID = xxx
 
+# Only the best color ;)
+MITS_COLOR = 0xbe2a36
+
 # Create MITS Bot help embed
 helpEmbed = discord.Embed(
                 description = '_ _\n_ _\n',
-                colour = discord.Colour(0xbe2a36)
+                colour = discord.Colour(MITS_COLOR)
             )
 helpEmbed.set_author(name="MITSBot Commands", icon_url="https://cdn.discordapp.com/emojis/756060351854018610.png")
 helpEmbed.add_field(name='<:student:780271578608828437> __**Student Commands**__', value='\
@@ -47,7 +51,7 @@ helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', val
 resourcesEmbed = discord.Embed(
                 title = '<:student:780271578608828437><:student:780271578608828437> Murdoch Resources <:student:780271578608828437><:student:780271578608828437>',
                 description = '_ _\n_ _\n',
-                colour = discord.Colour(0xbe2a36)
+                colour = discord.Colour(MITS_COLOR)
             )
 resourcesEmbed.add_field(name='<:book:780285717124743168> Studying', value=' \
     [myMurdoch Learning](https://moodleprod.murdoch.edu.au/my/)\n\
@@ -100,7 +104,7 @@ def newDealEmbed(titleVar, imageLink, store, couponCode, dealLink, externalLink)
     embed = discord.Embed(
         title = titleVar,
         description = '_ _\n_ _\n',
-        colour = discord.Colour(0xbe2a36)
+        colour = discord.Colour(MITS_COLOR)
     )
     embed.set_thumbnail(url=imageLink)
     embed.add_field(name='Store', value=store)
@@ -218,7 +222,7 @@ def getTodaysBirthdays():
         birthdaysEmbed = discord.Embed(
             description = embedDesc,
             title = '<:birthday:779924273950490646><:birthday:779924273950490646> Today\'s Birthdays <:birthday:779924273950490646><:birthday:779924273950490646>',
-            colour = discord.Colour(0xbe2a36)
+            colour = discord.Colour(MITS_COLOR)
         )
         
     return birthdaysEmbed
@@ -279,7 +283,7 @@ async def sendDog(message):
         title = 'Here is a dog.'
     dogEmbed = discord.Embed(
         title = title,
-        colour = discord.Colour(0xbe2a36)
+        colour = discord.Colour(MITS_COLOR)
     )
     dogEmbed.set_image(url=data[0]['url'])
     await message.channel.send(embed=dogEmbed)
@@ -292,10 +296,26 @@ async def sendCat(message):
         title = 'Here is a cat.'
     catEmbed = discord.Embed(
         title = title,
-        colour = discord.Colour(0xbe2a36)
+        colour = discord.Colour(MITS_COLOR)
     )
     catEmbed.set_image(url=data[0]['url'])
     await message.channel.send(embed=catEmbed)
+
+async def sendCatFact(message):
+    title = 'Here is a cat fact!'
+    desc = ""
+    try:
+        data = requests.get('https://catfact.ninja/fact').json()
+        desc = data.fact
+    except:
+        desc = "Could not get a cat fact!"
+
+    catFactEmbed = discord.Embed(
+        title = title,
+        colour = discord.Colour(MITS_COLOR),
+        description = desc
+    )
+    await message.channel.send(embed=catFactEmbed)
 
 async def getImage(searchTerm):
     randomPage = random.randint(0, 200)
@@ -313,7 +333,7 @@ async def getImage(searchTerm):
 async def sendImageEmbed(message, title, imageURL):
     embed = discord.Embed(
         title = title,
-        colour = discord.Colour(0xbe2a36)
+        colour = discord.Colour(MITS_COLOR)
     )
     embed.set_image(url=imageURL)
     await message.channel.send(embed=embed)
@@ -322,7 +342,7 @@ async def createAnnouncementPropEmbed(description, author, announcement):
     announcementPropEmbed = discord.Embed(
         title = "Announcement Proposal",
         description = description,
-        colour = discord.Colour(0xbe2a36)
+        colour = discord.Colour(MITS_COLOR)
     )
     announcementPropEmbed.add_field(name='Announcement Author', value=author)
     announcementPropEmbed.add_field(name='Announcement Message ID', value=announcement)
@@ -351,6 +371,8 @@ async def on_message(message):
             await message.channel.send(embed=resourcesEmbed)
         elif (command.startswith("dog") or command.startswith("doggo") or command.startswith("pupper") or command.startswith("pup") or command.startswith("woof")):
             await sendDog(message)
+        elif (command.startswith("catfact") or command.startswith("felinefact") or command.startswith("kittyfact")):
+            await sendCatFact(message)
         elif (command.startswith("cat") or command.startswith("feline") or command.startswith("kitty") or command.startswith("puss")):
             await sendCat(message)
         elif (command.startswith("announce ")):
@@ -382,7 +404,7 @@ async def on_message(message):
             randomHarold = random.randint(0, len(haroldImages)-1)
             haroldEmbed = discord.Embed(
                 title = "Here's Harold",
-                colour = discord.Colour(0xbe2a36)
+                colour = discord.Colour(MITS_COLOR)
             )
             haroldEmbed.set_image(url="attachment://"+haroldImages[randomHarold])
             await message.channel.send(file=discord.File("Harold/"+haroldImages[randomHarold]), embed=haroldEmbed)
