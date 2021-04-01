@@ -334,7 +334,7 @@ async def sendCatFact(message):
     except:
         desc = "Could not get a cat fact!"
     
-    sendTextEmbed(message, title, desc)
+    await sendTextEmbed(message, title, desc)
     
 async def sendJavaFact(message):
     title = 'Here is a fact about Java!'
