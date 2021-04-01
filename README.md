@@ -1,4 +1,5 @@
 # MITSBot
+
 A bot for the Murdoch IT Society Discord.
 
 **Current features:**
@@ -10,3 +11,28 @@ A bot for the Murdoch IT Society Discord.
 :dog: Send dog, cat, and a variety of animal pictures on request.
 
 :book: Offer a list of studying resources to Discord members by demand.
+
+**Config File Base:**
+
+```json
+{
+  "token": "",
+  "bingKey": "",
+  "serverID": "",
+  "Directories": {
+    "workingDir": "",
+    "ImagesDir": ""
+  },
+  "Roles": {
+    "moderatorRole": ""
+  },
+  "Channels": {
+    "motionChannel": "",
+    "trashcanChannel": "",
+    "bargainChannel": "",
+    "announcementsChannel": ""
+  },
+  "animals": [],
+  "animalsFilter": ""
+}
+```

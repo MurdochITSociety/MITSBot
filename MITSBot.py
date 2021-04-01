@@ -8,22 +8,27 @@ import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
-# Suggestion - get these values from a config file?
-token = xxx
-os.chdir(xxx)
+try:
+    configFile = open('config.json')
+    config = json.load(configFile)
+except:
+    print('\nCould not load config file')
+
+token = config['token']
+os.chdir(config['Directories']['workingDir'])
 client = discord.Client()
 
-bingAPIKey = xxx
-animals = ["aardvark","albatross","alligator","alpaca","ant","anteater","antelope","ape","armadillo","baboon","badger","bass","bat","bear","beaver","bee","bison","blue whale","boar","buffalo","bull","butterfly","camel","capybara","caracal","caribou","cassowary","cat","caterpillar","catfish","cattle","chamois","cheetah","chicken","chimpanzee","chinchilla","chough","clam","cobra","cockatiel","cockroach","cod","cormorant","cow","coyote","crab","crane","crocodile","crow","curlew","deer","dog","dogfish","dolphin","donkey","dotterel","dove","dragonfly","duck","dugong","dunlin","eagle","echidna","eel","eland","elephant","elk","emu","falcon","ferret","finch","fish","flamingo","fox","frog","gaur","gazelle","gerbil","giraffe","gnat","gnu","goat","goldfinch","goldfish","goose","gorilla","goshawk","grasshopper","grouse","guanaco","gull","hamster","hare","hawk","hedgehog","heron","herring","hippopotamus","horned lizard","hornet","horse","hummingbird","hyena","ibex","ibis","jackal","jaguar","jay","jellyfish","kangaroo","kingfisher","kiwi","koala","kookabura","kouprey","kudu","ladybug","lapwing","lark","lemur","leopard","lion","lizard","llama","lobster","locust","loris","louse","lyrebird","magpie","mallard","manatee","mandrill","mantis","marten","meerkat","mink","mongoose","monkey","moose","mouse","mule","naked mole rat","narwhal","newt","nightingale","octopus","okapi","opossum","oryx","ostrich","otter","owl","oyster","pangolin","panther","parrot","partridge","peafowl","pelican","penguin","pheasant","pig","pigeon","platypus","pony","porcupine","porpoise","quail","quelea","quetzal","quokka","rabbit","raccoon","ram","rat","raven","red panda","reindeer","rhinoceros","rook","salamander","salmon","sand dollar","sandpiper","sardine","scorpion","seahorse","seal","sea sponge","shag bird","shark","sheep","shrew","skunk","sloth","snail","snake","sparrow","sperm whale","sphynx","spider","spoonbill","squid","squirrel","starfish","starling","stingray","stinkbug","stork","sun conure","swallow","swan","tapir","tarsier","termite","tiger","tit bird","toad","trout","turkey","turtle","viper","vulture","wallaby","walrus","wasp","weasel","whale","wildcat","wolf","wombat","woodcock","woodpecker","worm","wren","yak","zebra"]
-animalFilter = " animal NOT hunt NOT catch NOT kill NOT hunting NOT game NOT gore NOT death NOT bite NOT bites NOT eat NOT eats NOT sad NOT gun NOT fight NOT fights NOT faceoff NOT blood NOT bleed NOT injured NOT disease NOT hurt NOT diseased NOT sick NOT pain NOT bloody NOT abuse NOT abused NOT treatment NOT wound NOT wounds NOT mating NOT mate NOT sex"
-haroldImages = os.listdir(xxx)
+bingAPIKey = config['bingKey']
+animals = config['animals']
+animalFilter = config['animalsFilter']
+haroldImages = os.listdir(config['Directories']['ImagesDir'])
 
-motionChannelID = xxx
-trashcanChannelID = xxx
-bargainChannelID = xxx
-announcementsChannelID = xxx
-mitsServerID = xxx
-moderatorRoleID = xxx
+motionChannelID = config['Channels']['motionChannel']
+trashcanChannelID = config['Channels']['trashcanChannel']
+bargainChannelID = config['Channels']['bargainChannel']
+announcementsChannelID = config['Channels']['annoucementsChannel']
+mitsServerID = config['serverID']
+moderatorRoleID = config['Roles']['moderatorRole']
 
 # Only the best color ;)
 MITS_COLOR = 0xbe2a36
