@@ -58,6 +58,7 @@ helpEmbed.add_field(name=':book: __**Fact Commands**__', value=' \
 helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
 helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', value=' \
     `m!animal [animal]` Any animal you want (almost).\n\
+    `m!animalgif [animal]` Same as the above. But a GIF!.\n\
     `m!dog` Pupper.\n\
     `m!cat` Cat.\n\
     `m!harold` Harold. ', inline=False)
@@ -341,15 +342,15 @@ async def sendJavaFact(message):
     desc = javaFacts[random.randint(0,len(javaFacts)-1)]
     await sendTextEmbed(message, title, desc)
 
-async def getImage(searchTerm):
+async def getImage(searchTerm, imageType, count):
     randomPage = random.randint(0, 200)
     searchURL = "https://api.bing.microsoft.com/v7.0/images/search"
     headers = {"Ocp-Apim-Subscription-Key" : bingAPIKey}
-    params  = {"q": searchTerm, "safeSearch": "Strict", "count": "1", "offset": str(randomPage)}
+    params  = {"q": searchTerm, "safeSearch": "Strict", "imageType": imageType, "count": "1", "offset": str(randomPage)}
     try:
         response = requests.get(searchURL, headers=headers, params=params)
         data = response.json()
-        url = data["value"][0]["thumbnailUrl"]
+        url = data["value"][0]["contentUrl"]
         return url
     except:
         return
@@ -412,14 +413,22 @@ async def on_message(message):
                 await proposal.add_reaction("👎")
         elif (command.startswith("an")):
             try:
-                if (command == "an"):
+                if (command == "an" or command == "animal" or command == "ang" or command == "animalgif"):
                     animal = animals[random.randint(0,len(animals)-1)]
-                    imageURL = await getImage(animal + animalFilter)
+                    imageURL = ""
+                    if (command == "an" or command == "animal"):
+                        imageURL = await getImage(animal + animalFilter, "Photo")
+                    else:
+                        imageURL = await getImage(animal + animalFilter, "AnimatedGif")
                     await sendImageEmbed(message, "Here is a " + animal + ".", imageURL)
                 else:
                     for i in animals:
                         if (i.startswith(command[command.find(" ")+1:])):
-                            imageURL = await getImage(i + animalFilter)
+                            imageURL = ""
+                            if (command.startswith("ang") or command.startswith("animalgif")):
+                                imageURL = await getImage(i + animalFilter, "AnimatedGif")
+                            else:
+                                imageURL = await getImage(i + animalFilter, "Photo")
                             await sendImageEmbed(message, "Here is a " + i + ".", imageURL)
                             return
                     await message.channel.send("Sorry, that animal cannot be found.", delete_after=10)
