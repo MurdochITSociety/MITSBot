@@ -373,6 +373,11 @@ async def createAnnouncementPropEmbed(description, author, announcement):
     announcementPropEmbed.add_field(name='Announcement Message ID', value=announcement)
     return announcementPropEmbed
 
+async def createLFGPost(message):
+    print("yo")
+
+# --- Events ---
+
 @client.event
 async def on_message(message):
     # Check if message came from bot
@@ -443,6 +448,8 @@ async def on_message(message):
             )
             haroldEmbed.set_image(url="attachment://"+haroldImages[randomHarold])
             await message.channel.send(file=discord.File("Harold/"+haroldImages[randomHarold]), embed=haroldEmbed)
+        elif (command.startswith("mm ") or command.startswith("lfg ")):
+            await createLFGPost(message)
         else:
             await message.channel.send("That's not a valid command. Try using m!help to find the right command.", delete_after=10)
 
