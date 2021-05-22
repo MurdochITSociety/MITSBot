@@ -8,105 +8,125 @@ import random
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 
-# Set working directory to directory of Python script
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-config = ""
-with open('config.json', encoding='utf-8') as configFile:
-    config = json.load(configFile)
-
-token = config['token']
-client = discord.Client()
-
-bingAPIKey = config['bingKey']
-animals = config['animals']
-animalFilter = config['animalsFilter']
-
-haroldImages = os.listdir(config['Directories']['ImagesDir'])
-javaFacts = config['javaFacts']
-
-motionChannelID = config['Channels']['motionChannel']
-trashcanChannelID = config['Channels']['trashcanChannel']
-bargainChannelID = config['Channels']['bargainChannel']
-announcementsChannelID = config['Channels']['announcementsChannel']
-mitsServerID = config['serverID']
-moderatorRoleID = config['Roles']['moderatorRole']
+#import local modules
+from birthdays import getTodaysBirthdays, addBday, delBday, viewBday
+from fileio import getFileLines
 
 # Only the best color ;)
 MITS_COLOR = 0xbe2a36
 
-# Create MITS Bot help embed
-helpEmbed = discord.Embed(
-                description = '_ _\n_ _\n',
-                colour = discord.Colour(MITS_COLOR)
-            )
-helpEmbed.set_author(name="MITSBot Commands", icon_url="https://cdn.discordapp.com/emojis/756060351854018610.png")
-helpEmbed.add_field(name='<:student:780271578608828437> __**Student Commands**__', value='\
-    `m!resources` Get study and support resources. ', inline=False)
-    
-helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
-helpEmbed.add_field(name='<:birthday:779924273950490646> __**Birthday Commands**__', value=' \
-    `m!addbday [Month] [Day]` Register a birthday. E.g. m!addbday January 1\n\
-    `m!delbday` Remove a birthday.\n\
-    `m!viewbday` View today\'s birthdays. ', inline=False)
+# globals
+client = None
+bingAPIKey = None
+animals = None
+animalFilter = None
+haroldImages = None
+javaFacts = None
+motionChannelID = None
+trashcanChannelID = None
+bargainChannelID = None
+announcementsChannelID = None
+mitsServerID = None
+moderatorRoleID = None
+helpEmbed = None
+resourcesEmbed = None
 
-helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
-helpEmbed.add_field(name=':book: __**Fact Commands**__', value=' \
-    `m!catfact` Get a cool cat fact!\n\
-    `m!javafact` Get a cool fact about Java! ', inline=False)
+def main():
+    # Set working directory to directory of Python script
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
-helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', value=' \
-    `m!animal [animal]` Any animal you want (almost).\n\
-    `m!animalgif [animal]` Same as the above. But a GIF!.\n\
-    `m!dog` Pupper.\n\
-    `m!cat` Cat.\n\
-    `m!harold` Harold. ', inline=False)
-    
-    
-# Create Murdoch resources embed
-resourcesEmbed = discord.Embed(
-                title = '<:student:780271578608828437><:student:780271578608828437> Murdoch Resources <:student:780271578608828437><:student:780271578608828437>',
-                description = '_ _\n_ _\n',
-                colour = discord.Colour(MITS_COLOR)
-            )
-resourcesEmbed.add_field(name='<:book:780285717124743168> Studying', value=' \
-    [myMurdoch Learning](https://moodleprod.murdoch.edu.au/my/)\n\
-    [Murdoch Library](https://www.murdoch.edu.au/library)\n\
-    [Murdoch Referencing](https://www.murdoch.edu.au/library/help-support/support-for-students/referencing)\n\
-    [Study Resources](https://moodleprod.murdoch.edu.au/course/view.php?id=9416#section-6)\n\
-    [Murdoch Bookshop](https://our.murdoch.edu.au/Bookshop/)\n\
-    [Student Hub Booking](https://studenthub.libcal.com/)')
-resourcesEmbed.add_field(name='_ _', value='_ _', inline=True) # Limits embed to two columns
-resourcesEmbed.add_field(name='<:question:780285635021897729> Course Help', value=' \
-    [Murdoch Handbook](https://handbook.murdoch.edu.au/)\n\
-    [Dates and Timetables](https://timetables.murdoch.edu.au/)\n\
-    [Course Plans](https://www.murdoch.edu.au/mymurdoch/support-advice/student-admin/enrolment/how-to-enrol/course-plans/)\n\
-    [myMurdoch Advice](https://www.murdoch.edu.au/mymurdoch/support-advice/mymurdoch-advice)\n\
-    [Academic Contacts](https://www.murdoch.edu.au/contacts/academic/)')
-resourcesEmbed.add_field(name='_ _', value='_ _', inline=False) # Gap between resources sections
-resourcesEmbed.add_field(name='<:computer:780285373959634984> Student Software', value=' \
-    [Azure Dev Tools](https://azureforeducation.microsoft.com/devtools)\n\
-    [GitHub Developer Pack](https://education.github.com/pack)\n\
-    [VMware Academy](https://e5.onthehub.com/WebStore/ProductsByMajorVersionList.aspx?ws=ef64204f-8ec4-de11-886d-0030487d8897&vsro=8)')
-resourcesEmbed.add_field(name='_ _', value='_ _', inline=True) # Limits embed to two columns
-resourcesEmbed.add_field(name='<:briefcase:780285263585738815> Jobs and Internships', value=' \
-    [GradConnection](https://au.gradconnection.com/graduate-jobs/information-technology/)\n\
-    [GradAustralia](https://gradaustralia.com.au/)')
-resourcesEmbed.add_field(name='_ _', value='_ _', inline=False) # Gap between resources sections
-resourcesEmbed.add_field(name='<:person_raising_hand:780285082228228116> Support', value=' \
-    [Murdoch Support Services](https://www.murdoch.edu.au/life-at-murdoch/support-services)\n\
-    [Murdoch Counselling](https://www.murdoch.edu.au/counselling)\n\
-    [Murdoch Doctor](http://www.murdoch.edu.au/Medical/Making-an-appointment/)\n\
-    [Mental Health Helplines](https://www.healthdirect.gov.au/mental-health-helplines)\n\
-    [Headspace](https://headspace.org.au/)')
+    config = ""
+    with open('config.json', encoding='utf-8') as configFile:
+        config = json.load(configFile)
 
-# Return lines from a file
-def getFileLines(file):
-    f = open(file, "r")
-    lines = f.readlines()
-    f.close
-    return lines
+    token = config['token']
+    client = discord.Client()
+
+    bingAPIKey = config['bingKey']
+    animals = config['animals']
+    animalFilter = config['animalsFilter']
+
+    haroldImages = os.listdir(config['Directories']['ImagesDir'])
+    javaFacts = config['javaFacts']
+
+    motionChannelID = config['Channels']['motionChannel']
+    trashcanChannelID = config['Channels']['trashcanChannel']
+    bargainChannelID = config['Channels']['bargainChannel']
+    announcementsChannelID = config['Channels']['announcementsChannel']
+    mitsServerID = config['serverID']
+    moderatorRoleID = config['Roles']['moderatorRole']
+
+    # Create MITS Bot help embed
+    helpEmbed = discord.Embed(
+                    description = '_ _\n_ _\n',
+                    colour = discord.Colour(MITS_COLOR)
+                )
+    helpEmbed.set_author(name="MITSBot Commands", icon_url="https://cdn.discordapp.com/emojis/756060351854018610.png")
+    helpEmbed.add_field(name='<:student:780271578608828437> __**Student Commands**__', value='\
+        `m!resources` Get study and support resources. ', inline=False)
+        
+    helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
+    helpEmbed.add_field(name='<:birthday:779924273950490646> __**Birthday Commands**__', value=' \
+        `m!addbday [Month] [Day]` Register a birthday. E.g. m!addbday January 1\n\
+        `m!delbday` Remove a birthday.\n\
+        `m!viewbday` View today\'s birthdays. ', inline=False)
+
+    helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
+    helpEmbed.add_field(name=':book: __**Fact Commands**__', value=' \
+        `m!catfact` Get a cool cat fact!\n\
+        `m!javafact` Get a cool fact about Java! ', inline=False)
+
+    helpEmbed.add_field(name='_ _', value='_ _', inline=True) # Gap between command sections
+    helpEmbed.add_field(name='<:dog:810097516409257984> __**Image Commands**__', value=' \
+        `m!animal [animal]` Any animal you want (almost).\n\
+        `m!animalgif [animal]` Same as the above. But a GIF!.\n\
+        `m!dog` Pupper.\n\
+        `m!cat` Cat.\n\
+        `m!harold` Harold. ', inline=False)
+        
+        
+    # Create Murdoch resources embed
+    resourcesEmbed = discord.Embed(
+                    title = '<:student:780271578608828437><:student:780271578608828437> Murdoch Resources <:student:780271578608828437><:student:780271578608828437>',
+                    description = '_ _\n_ _\n',
+                    colour = discord.Colour(MITS_COLOR)
+                )
+    resourcesEmbed.add_field(name='<:book:780285717124743168> Studying', value=' \
+        [myMurdoch Learning](https://moodleprod.murdoch.edu.au/my/)\n\
+        [Murdoch Library](https://www.murdoch.edu.au/library)\n\
+        [Murdoch Referencing](https://www.murdoch.edu.au/library/help-support/support-for-students/referencing)\n\
+        [Study Resources](https://moodleprod.murdoch.edu.au/course/view.php?id=9416#section-6)\n\
+        [Murdoch Bookshop](https://our.murdoch.edu.au/Bookshop/)\n\
+        [Student Hub Booking](https://studenthub.libcal.com/)')
+    resourcesEmbed.add_field(name='_ _', value='_ _', inline=True) # Limits embed to two columns
+    resourcesEmbed.add_field(name='<:question:780285635021897729> Course Help', value=' \
+        [Murdoch Handbook](https://handbook.murdoch.edu.au/)\n\
+        [Dates and Timetables](https://timetables.murdoch.edu.au/)\n\
+        [Course Plans](https://www.murdoch.edu.au/mymurdoch/support-advice/student-admin/enrolment/how-to-enrol/course-plans/)\n\
+        [myMurdoch Advice](https://www.murdoch.edu.au/mymurdoch/support-advice/mymurdoch-advice)\n\
+        [Academic Contacts](https://www.murdoch.edu.au/contacts/academic/)')
+    resourcesEmbed.add_field(name='_ _', value='_ _', inline=False) # Gap between resources sections
+    resourcesEmbed.add_field(name='<:computer:780285373959634984> Student Software', value=' \
+        [Azure Dev Tools](https://azureforeducation.microsoft.com/devtools)\n\
+        [GitHub Developer Pack](https://education.github.com/pack)\n\
+        [VMware Academy](https://e5.onthehub.com/WebStore/ProductsByMajorVersionList.aspx?ws=ef64204f-8ec4-de11-886d-0030487d8897&vsro=8)')
+    resourcesEmbed.add_field(name='_ _', value='_ _', inline=True) # Limits embed to two columns
+    resourcesEmbed.add_field(name='<:briefcase:780285263585738815> Jobs and Internships', value=' \
+        [GradConnection](https://au.gradconnection.com/graduate-jobs/information-technology/)\n\
+        [GradAustralia](https://gradaustralia.com.au/)')
+    resourcesEmbed.add_field(name='_ _', value='_ _', inline=False) # Gap between resources sections
+    resourcesEmbed.add_field(name='<:person_raising_hand:780285082228228116> Support', value=' \
+        [Murdoch Support Services](https://www.murdoch.edu.au/life-at-murdoch/support-services)\n\
+        [Murdoch Counselling](https://www.murdoch.edu.au/counselling)\n\
+        [Murdoch Doctor](http://www.murdoch.edu.au/Medical/Making-an-appointment/)\n\
+        [Mental Health Helplines](https://www.healthdirect.gov.au/mental-health-helplines)\n\
+        [Headspace](https://headspace.org.au/)')
+
+    client.run(token)
+
+# if only run if main script
+if __name__ == "__main__": 
+    main()
 
 # Filter deals that contain a blacklisted keyword
 def filterDeal(deal):
@@ -214,83 +234,6 @@ async def checkForDeals():
     print ("Checked for new electronics deals.")
     for embedVar in dealEmbeds:
         await bargainChannel.send(embed=embedVar)
-
-def getBdays():
-    birthdays = getFileLines("birthdays.txt")
-    return birthdays
-  
-def getTodaysBirthdays():
-    todaysBirthdays = []
-    birthdaysEmbed = 0
-    today = datetime.datetime.today()
-    today = today.strftime("%B %d")
-    
-    birthdays = getBdays()
-    for birthday in birthdays:
-        birthdaydate = birthday[19:]
-        if (today in birthdaydate):
-            todaysBirthdays.append(birthday[:18])
-            
-    if (len(todaysBirthdays) != 0):
-        embedDesc = '_ _\n'
-        for birthday in todaysBirthdays:
-            embedDesc += 'It\'s <@' + birthday + '>\'s birthday today!\n'
-        embedDesc += '\nHappy Birthday!\n'
-        birthdaysEmbed = discord.Embed(
-            description = embedDesc,
-            title = '<:birthday:779924273950490646><:birthday:779924273950490646> Today\'s Birthdays <:birthday:779924273950490646><:birthday:779924273950490646>',
-            colour = discord.Colour(MITS_COLOR)
-        )
-        
-    return birthdaysEmbed
-    
-# Check if a user ID exists in the birthdays file
-def birthdayExists(userID):
-    birthdays = getBdays()
-    for birthday in birthdays:
-        if (userID in birthday):
-            return True
-    return False
-
-async def addBday(message):
-    userID = str(message.author.id)
-    if (birthdayExists(userID)):
-        await message.channel.send("Your birthday is already registered. To remove and re-submit your birthday, try using m!help.")
-        return
-    try:
-        birthday = datetime.datetime.strptime(message.content[10:], '%b %d')
-    except:
-        try:
-            birthday = datetime.datetime.strptime(message.content[10:], '%B %d')
-        except:
-            await message.channel.send("That wasn't quite right. Try using m!help to find the right command.")
-            return
-    f = open('birthdays.txt', "a")
-    f.write(userID + ' ' + str(birthday.strftime("%B %d")) + '\n')
-    f.close()
-    await message.channel.send("Your birthday has been registered.")
-    return
-    
-async def delBday(message):
-    userID = str(message.author.id)
-    if (not birthdayExists(userID)):
-        await message.channel.send("Your birthday hasn't been registered yet. Try using m!help to register your birthday first.")
-        return
-    birthdays = getBdays()
-    f = open('birthdays.txt', "w")
-    for birthday in birthdays:
-        if (userID not in birthday):
-            f.write(birthday)
-    f.close()
-    await message.channel.send("Your birthday has been deleted.")
-    return
-    
-async def viewBday(message):
-    todaysBirthdays = getTodaysBirthdays()
-    if (todaysBirthdays != 0):
-        await message.channel.send(embed=todaysBirthdays)
-    else:
-        await message.channel.send("It's nobody\'s birthday today :(")
 
 async def sendDog(message):
     data = requests.get('https://api.thedogapi.com/v1/images/search').json()
@@ -555,5 +498,3 @@ async def on_ready():
     await asyncio.sleep(secondsLeft)
     
     dailyBirthdays.start()
-
-client.run(token)
