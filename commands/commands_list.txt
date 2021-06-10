@@ -1,0 +1,9 @@
+m!announce
+m!help / m!h / m!commands
+m!resources
+m!dog
+m!cat
+m!catfact
+m!javafact
+m!addbday / m!addbirthday / m!newbday / m!newbirthday
+m!delbday / m!delbirthday / m!deletebday / m!deletebirthday

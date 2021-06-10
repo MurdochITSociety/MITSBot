@@ -1,9 +1,11 @@
 import discord
+from discord.ext import tasks
 import requests
 from bs4 import BeautifulSoup
 
 from mitsbot_globals import *
 from fileio import getFileLines
+
 
 # Filter deals that contain a blacklisted keyword
 def filterDeal(deal):
@@ -31,6 +33,8 @@ def newDealEmbed(titleVar, imageLink, store, couponCode, dealLink, externalLink)
 
 
     # Scrape url for new deals
+
+
 def checkURL(url, file, otherFile):
 
     # Fetch deals from first history file
@@ -100,3 +104,18 @@ def checkURL(url, file, otherFile):
         f.write(newDeal + '\n')
     f.close()
     return dealEmbeds
+
+
+# task is scheduled on import
+@tasks.loop(minutes=2)
+async def checkForDeals():
+    dealEmbeds = checkURL('https://www.ozbargain.com.au/cat/computing', 'computing.txt', 'electronics.txt')
+    print("Checked for new computing deals.")
+    for embedVar in dealEmbeds:
+        await bargainChannel.send(embed=embedVar)
+    # await asyncio.sleep(60)
+
+    dealEmbeds = checkURL('https://www.ozbargain.com.au/cat/electrical-electronics', 'electronics.txt', 'computing.txt')
+    print("Checked for new electronics deals.")
+    for embedVar in dealEmbeds:
+        await bargainChannel.send(embed=embedVar)

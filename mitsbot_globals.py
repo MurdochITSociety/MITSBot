@@ -38,10 +38,10 @@ global mitsServerID
 global moderatorRoleID
 global helpEmbed
 global resourcesEmbed
-global trashcanChannel
+global trashcanChannel; trashcanChannel = None
 global bargainChannel
-global announcementsChannel
-global motionChannel
+global announcementsChannel; announcementsChannel = None
+global motionChannel; motionChannel = None
 
 client = discord.Client()
 

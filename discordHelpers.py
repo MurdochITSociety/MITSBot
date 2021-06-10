@@ -1,5 +1,5 @@
-import discord
-from mitsbot_globals import *
+from mitsbot_globals import discord, MITS_COLOR
+
 
 async def sendTextEmbed(message, title, description):
     textEmbed = discord.Embed(
@@ -8,6 +8,7 @@ async def sendTextEmbed(message, title, description):
         description = description
     )
     await message.channel.send(embed=textEmbed)
+
 
 async def sendImageEmbed(message, title, imageURL):
     embed = discord.Embed(

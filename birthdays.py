@@ -1,6 +1,9 @@
 import datetime
 import discord
+from discord.ext import tasks
 from fileio import getFileLines
+
+from mitsbot_globals import MITS_COLOR, trashcanChannel
 
 # private func to read birthdays from file
 def _getBdays():
@@ -79,3 +82,10 @@ async def viewBday(message, MITS_COLOR):
         await message.channel.send(embed=todaysBirthdays)
     else:
         await message.channel.send("It's nobody\'s birthday today :(")
+
+# Check birthdays file each day, and post if any are on the current date
+@tasks.loop(hours=24)
+async def dailyBirthdays():
+    todaysBirthdays = getTodaysBirthdays(MITS_COLOR)
+    if (todaysBirthdays != 0):
+        await trashcanChannel.send(embed=todaysBirthdays)
