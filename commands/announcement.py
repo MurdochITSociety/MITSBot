@@ -1,6 +1,6 @@
 import discord
 
-from mitsbot_globals import MITS_COLOR, client, mitsServerID, moderatorRoleID, motionChannel, announcementsChannel
+from mitsbot_globals import MITS_COLOR, client, mitsServerID, moderatorRoleID, motionChannel, announcementsChannel, motionChannelID, addEventListener
 
 async def createAnnouncementPropEmbed(description, author, announcement):
     announcementPropEmbed = discord.Embed(
@@ -73,3 +73,31 @@ async def countAnnouncementReactions(reaction, user):
         await reaction.message.edit(embed = announcementPropEmbed)
     else:
         return
+
+
+async def sendAnnouncementMessage(message):
+    if (message.channel.id != motionChannelID):
+        await message.channel.send("That's the wrong channel for proposing announcements. Please use #motions.",
+                                   delete_after=10)
+    else:
+        description = "@everyone The above announcement has been proposed. Please react to this message with a <:thumbsup:825609718181265490> to approve it, or a <:thumbsdown:825609718181265490> to deny it.\n\n_ _"
+        announcementPropEmbed = await createAnnouncementPropEmbed(description,
+                                                                  "<@" + str(message.author.id) + ">",
+                                                                  str(message.id))
+        proposal = await message.channel.send(embed=announcementPropEmbed)
+        await proposal.add_reaction("👍")
+        await proposal.add_reaction("👎")
+
+
+# add discord client events for reactions
+@client.event
+async def on_reaction_add(reaction, user):
+    await countAnnouncementReactions(reaction, user)
+
+
+@client.event
+async def on_reaction_remove(reaction, user):
+    await countAnnouncementReactions(reaction, user)
+
+
+addEventListener("announce ", sendAnnouncementMessage)

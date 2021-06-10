@@ -1,7 +1,8 @@
 import random
 
-from mitsbot_globals import javaFacts
+from mitsbot_globals import javaFacts, addEventListener
 from discordHelpers import sendTextEmbed
+
 
 async def sendJavaFact(message):
     title = 'Here is a fact about Java!'
@@ -9,3 +10,8 @@ async def sendJavaFact(message):
     print("Waiting to send java fact")
     await sendTextEmbed(message, title, desc)
     print("Sent java fact")
+
+
+# add event listener for java fact command
+addEventListener("javafact", sendJavaFact)
+addEventListener("jfact", sendJavaFact)

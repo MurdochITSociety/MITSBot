@@ -1,7 +1,8 @@
 import requests
 import discord
 
-from mitsbot_globals import MITS_COLOR
+from mitsbot_globals import MITS_COLOR, addEventListener
+
 
 async def sendCat(message):
     data = requests.get('https://api.thecatapi.com/v1/images/search').json()
@@ -17,3 +18,10 @@ async def sendCat(message):
     print("Waiting to send cat")
     await message.channel.send(embed=catEmbed)
     print("Cat sent")
+
+
+# add event listener for cat command
+addEventListener("cat", sendCat)
+addEventListener("feline", sendCat)
+addEventListener("kitty", sendCat)
+addEventListener("puss", sendCat)

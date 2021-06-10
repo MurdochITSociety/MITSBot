@@ -1,6 +1,9 @@
 import requests
 import discord
 
+from mitsbot_globals import MITS_COLOR, addEventListener
+
+
 async def sendDog(message):
     data = requests.get('https://api.thedogapi.com/v1/images/search').json()
     try:
@@ -15,3 +18,11 @@ async def sendDog(message):
     print("Waiting to send dog")
     await message.channel.send(embed=dogEmbed)
     print("Dog sent")
+
+
+# add event listener for dog commands
+addEventListener("dog", sendDog)
+addEventListener("doggo", sendDog)
+addEventListener("pup", sendDog)
+addEventListener("pupper", sendDog)
+addEventListener("woof", sendDog)
