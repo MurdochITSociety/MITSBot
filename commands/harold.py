@@ -1,7 +1,11 @@
 import discord
 import random
+import os
 
-from mitsbot_globals import MITS_COLOR, haroldImages, addEventListener
+from mitsbot_globals import MITS_COLOR, haroldImages, addEventListener, config
+
+
+haroldImages = os.listdir(config['Directories']['ImagesDir'])
 
 
 async def sendHarold(message):
@@ -12,6 +16,7 @@ async def sendHarold(message):
     )
     haroldEmbed.set_image(url="attachment://" + haroldImages[randomHarold])
     await message.channel.send(file=discord.File("Harold/" + haroldImages[randomHarold]), embed=haroldEmbed)
+
 
 # add event listener for discord command
 addEventListener("harold", sendHarold)

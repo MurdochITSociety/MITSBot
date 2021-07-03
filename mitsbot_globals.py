@@ -6,29 +6,30 @@ import discord
 MITS_COLOR = 0xbe2a36
 
 # globals, should be passed around eventually
-#client = None
-#bingAPIKey = None
-#animals = None
-#animalFilter = None
-#haroldImages = None
-#javaFacts = None
-#motionChannelID = None
-#trashcanChannelID = None
-#bargainChannelID = None
-#announcementsChannelID = None
-#mitsServerID = None
-#moderatorRoleID = None
-#helpEmbed = None
-#resourcesEmbed = None
-#trashcanChannel = None
-#bargainChannel = None
-#announcementsChannel = None
-#motionChannel = None
+# client = None
+# bingAPIKey = None
+# animals = None
+# animalFilter = None
+# haroldImages = None
+# javaFacts = None
+# motionChannelID = None
+# trashcanChannelID = None
+# bargainChannelID = None
+# announcementsChannelID = None
+# mitsServerID = None
+# moderatorRoleID = None
+# helpEmbed = None
+# resourcesEmbed = None
+# trashcanChannel = None
+# bargainChannel = None
+# announcementsChannel = None
+# motionChannel = None
 global client
+global config
 global bingAPIKey
 global animals
 global animalFilter
-global haroldImages
+global haroldImages; haroldImages = None
 global javaFacts
 global motionChannelID
 global trashcanChannelID
@@ -61,7 +62,6 @@ bingAPIKey = config['bingKey']
 animals = config['animals']
 animalFilter = config['animalsFilter']
 
-haroldImages = os.listdir(config['Directories']['ImagesDir'])
 javaFacts = config['javaFacts']
 
 motionChannelID = config['Channels']['motionChannel']
@@ -70,6 +70,7 @@ bargainChannelID = config['Channels']['bargainChannel']
 announcementsChannelID = config['Channels']['announcementsChannel']
 mitsServerID = config['serverID']
 moderatorRoleID = config['Roles']['moderatorRole']
+
 
 def addEventListener(command_name, callback):
     events.update({command_name: callback})
