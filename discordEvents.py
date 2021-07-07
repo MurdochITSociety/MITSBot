@@ -1,7 +1,9 @@
 from mitsbot_globals import *
 from discordHelpers import *
-from ozbargain import checkForDeals
+
+# initialise all commands and services (registering them, starting async tasks etc)
 from commands import *
+from services import *
 
 
 @client.event
@@ -23,7 +25,7 @@ async def on_message(message):
                 await fn(message)
                 return
         await message.channel.send("That's not a valid command. Try using m!help to find the right command.",
-                                       delete_after=10)
+                                   delete_after=10)
 
 
 # After Discord client is ready, define the channels and start the threads
@@ -37,5 +39,4 @@ async def on_ready():
     motionChannel = client.get_channel(motionChannelID)
 
     # start ozbargain monitor
-    checkForDeals.start()
-
+    ozbargain.checkForDeals.start()

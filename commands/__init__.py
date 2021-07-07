@@ -7,3 +7,4 @@ from . import help
 from . import image
 from . import javafact
 from . import resources
+from . import birthdays
