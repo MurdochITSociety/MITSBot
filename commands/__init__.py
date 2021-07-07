@@ -6,5 +6,4 @@ from . import harold
 from . import help
 from . import image
 from . import javafact
-from . import lfg
 from . import resources
