@@ -11,7 +11,7 @@ from mitsbot_globals import MITS_COLOR, trashcanChannel, client, addEventListene
 def _getBdays():
     birthdays = getFileLines("birthdays.txt")
     return birthdays
-  
+
 
 # Private func to check if a user ID exists in the birthdays file
 def _birthdayExists(userID):
@@ -22,29 +22,29 @@ def _birthdayExists(userID):
     return False
 
 
-def getTodaysBirthdays(MITS_COLOR):
+def getTodaysBirthdays():
     todaysBirthdays = []
     birthdaysEmbed = 0
     today = datetime.datetime.today()
     today = today.strftime("%B %d")
-    
+
     birthdays = _getBdays()
     for birthday in birthdays:
         birthdaydate = birthday[19:]
         if (today in birthdaydate):
             todaysBirthdays.append(birthday[:18])
-            
+
     if (len(todaysBirthdays) != 0):
         embedDesc = '_ _\n'
         for birthday in todaysBirthdays:
             embedDesc += 'It\'s <@' + birthday + '>\'s birthday today!\n'
         embedDesc += '\nHappy Birthday!\n'
         birthdaysEmbed = discord.Embed(
-            description = embedDesc,
-            title = '<:birthday:779924273950490646><:birthday:779924273950490646> Today\'s Birthdays <:birthday:779924273950490646><:birthday:779924273950490646>',
-            colour = discord.Colour(MITS_COLOR)
+            description=embedDesc,
+            title='<:birthday:779924273950490646><:birthday:779924273950490646> Today\'s Birthdays <:birthday:779924273950490646><:birthday:779924273950490646>',
+            colour=discord.Colour(MITS_COLOR)
         )
-        
+
     return birthdaysEmbed
 
 
@@ -57,7 +57,8 @@ async def addBday(message):
         birthday = datetime.datetime.strptime(message.content[10:], '%b %d')
     except:
         try:
-            birthday = datetime.datetime.strptime(message.content[10:], '%B %d')
+            birthday = datetime.datetime.strptime(
+                message.content[10:], '%B %d')
         except:
             await message.channel.send("That wasn't quite right. Try using m!help to find the right command.")
             return
@@ -66,7 +67,7 @@ async def addBday(message):
     f.close()
     await message.channel.send("Your birthday has been registered.")
     return
-    
+
 
 async def delBday(message):
     userID = str(message.author.id)
@@ -81,10 +82,10 @@ async def delBday(message):
     f.close()
     await message.channel.send("Your birthday has been deleted.")
     return
-    
 
-async def viewBday(message, MITS_COLOR):
-    todaysBirthdays = getTodaysBirthdays(MITS_COLOR)
+
+async def viewBday(message):
+    todaysBirthdays = getTodaysBirthdays()
     if (todaysBirthdays != 0):
         await message.channel.send(embed=todaysBirthdays)
     else:
@@ -107,7 +108,8 @@ async def on_ready():
     if (int(now.hour) < 8):
         future = now.replace(hour=8, minute=0, second=0, microsecond=0)
     else:
-        future = now.replace(hour=8, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
+        future = now.replace(hour=8, minute=0, second=0,
+                             microsecond=0) + datetime.timedelta(days=1)
     secondsLeft = int(future.strftime('%s')) - int(now.strftime('%s'))
     await asyncio.sleep(secondsLeft)
 
