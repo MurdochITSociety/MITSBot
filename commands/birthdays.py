@@ -40,9 +40,9 @@ def getTodaysBirthdays():
             embedDesc += 'It\'s <@' + birthday + '>\'s birthday today!\n'
         embedDesc += '\nHappy Birthday!\n'
         birthdaysEmbed = discord.Embed(
-            description=embedDesc,
-            title='<:birthday:779924273950490646><:birthday:779924273950490646> Today\'s Birthdays <:birthday:779924273950490646><:birthday:779924273950490646>',
-            colour=discord.Colour(MITS_COLOR)
+            description = embedDesc,
+            title = '<:birthday:779924273950490646><:birthday:779924273950490646> Today\'s Birthdays <:birthday:779924273950490646><:birthday:779924273950490646>',
+            colour = discord.Colour(MITS_COLOR)
         )
 
     return birthdaysEmbed
