@@ -57,8 +57,7 @@ async def addBday(message):
         birthday = datetime.datetime.strptime(message.content[10:], '%b %d')
     except:
         try:
-            birthday = datetime.datetime.strptime(
-                message.content[10:], '%B %d')
+            birthday = datetime.datetime.strptime(message.content[10:], '%B %d')
         except:
             await message.channel.send("That wasn't quite right. Try using m!help to find the right command.")
             return
