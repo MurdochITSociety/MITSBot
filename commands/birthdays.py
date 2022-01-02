@@ -110,8 +110,7 @@ async def on_ready():
         future = now.replace(hour=8, 
                              minute=0, 
                              second=0,
-                             microsecond=0) + 
-                 datetime.timedelta(days=1)
+                             microsecond=0) + datetime.timedelta(days=1)
     secondsLeft = int(future.strftime('%s')) - int(now.strftime('%s'))
     await asyncio.sleep(secondsLeft)
 
