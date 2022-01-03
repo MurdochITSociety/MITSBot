@@ -76,17 +76,13 @@ async def countAnnouncementReactions(reaction, user):
 
 
 async def sendAnnouncementMessage(message):
-    if (message.channel.id != motionChannelID):
-        await message.channel.send("That's the wrong channel for proposing announcements. Please use #motions.",
-                                   delete_after=10)
-    else:
-        description = "@everyone The above announcement has been proposed. Please react to this message with a <:thumbsup:825609718181265490> to approve it, or a <:thumbsdown:825609718181265490> to deny it.\n\n_ _"
-        announcementPropEmbed = await createAnnouncementPropEmbed(description,
-                                                                  "<@" + str(message.author.id) + ">",
-                                                                  str(message.id))
-        proposal = await message.channel.send(embed=announcementPropEmbed)
-        await proposal.add_reaction("👍")
-        await proposal.add_reaction("👎")
+    description = "@everyone The above announcement has been proposed. Please react to this message with a <:thumbsup:825609718181265490> to approve it, or a <:thumbsdown:825609718181265490> to deny it.\n\n_ _"
+    announcementPropEmbed = await createAnnouncementPropEmbed(description,
+                                                                "<@" + str(message.author.id) + ">",
+                                                                str(message.id))
+    proposal = await message.channel.send(embed=announcementPropEmbed)
+    await proposal.add_reaction("👍")
+    await proposal.add_reaction("👎")
 
 
 # add discord client events for reactions
