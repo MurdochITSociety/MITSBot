@@ -30,7 +30,7 @@ async def countAnnouncementReactions(reaction, user):
         return
     
     originalDescription = "The above announcement has been proposed. Please react to this message with a <:thumbsup:825609718181265490> to approve it, or a <:thumbsdown:825609718181265490> to deny it.\n\n"
-    moderatorCount = len(client.get_guild(mitsServerID).get_role(role_id=moderatorRoleID).members) - 1
+    moderatorCount = len(bot.get_guild(mitsServerID).get_role(role_id=moderatorRoleID).members) - 1
     requiredVote = int(round((moderatorCount) * 0.3))
     approvalRating = 0
     forVotes = []
