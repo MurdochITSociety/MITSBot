@@ -3,50 +3,38 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { ImageUrl } = require("../config.json");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("help").setDescription("In need of some help?"),
+  data: new SlashCommandBuilder()
+    .setName("help")
+    .setDescription("In need of some help?")
+    .addStringOption((opt) => opt.setName("name").setDescription("Command Set to view"))
+    .addIntegerOption((opt) => opt.setName("number").setDescription("Command Set to view")),
+
   cooldown: 5,
   async execute(interaction) {
-    // args = args.map(function (x) {
-    //   return x.toLowerCase();
-    // });
-    // if (args[0] == null) {
-    const embed = new Discord.MessageEmbed()
-      .setTitle("Help Categories")
-      .setColor("#039efc")
-      .setDescription("1. **Fun Commands**\n 2.**Clan Commands**\n 3.**Admin Commands** \n **Usage:** ==help fun")
-      .setFooter({ text: "Note: some commands are buggy and may change" /* iconUrl: ImageUrl */ })
-      .setThumbnail(ImageUrl);
+    const commandName = interaction.options.getString("name");
+    const commandNum = interaction.options.getInteger("number") || -1;
 
+    let embed;
+    if (commandName == "" && commandNum == -1) {
+      embed = new Discord.MessageEmbed()
+        .setTitle("Help Categories")
+        .setColor("#039efc")
+        .setDescription("1. **Fun Commands**\n 2.**Admin Commands** \n **Usage:** /help fun")
+        .setFooter({ text: "Note: some commands are buggy and may change" /* iconUrl: ImageUrl */ })
+        .setThumbnail(ImageUrl);
+    } else if (commandName == "fun" || commandNum == 1) {
+      embed = new Discord.MessageEmbed()
+        .setTitle("Fun Commands")
+        .setColor("#ffaa00")
+        .setDescription("1. **rtd**\n 2.**coinflip**\n 3.**ping** \n")
+        .setFooter({ text: "Note: some commands are buggy and may change" /* iconUrl: ImageUrl */ });
+    } else if (commandName == "admin" || commandNum == 2) {
+      embed = new Discord.MessageEmbed()
+        .setTitle("Admin Commands")
+        .setColor("#ff1900")
+        .setDescription(":construction: Coming Soon! :construction:")
+        .setFooter({ text: "Note: some commands are buggy and may change" /* iconUrl: ImageUrl */ });
+    }
     await interaction.reply({ embeds: [embed] });
-    // } else if (args[0] == "fun" || args[0] == "1") {
-    //   const embed = new Discord.MessageEmbed()
-    //     .setTitle("Fun Commands")
-    //     .setColor("#ffaa00")
-    //     .setDescription("1. **rtd**\n 2.**coinflip**\n 3.**ping** \n 4.**server** \n")
-    //     .setFooter("Note: some commands are buggy and may change");
-    //   message.channel.send({
-    //     embed,
-    //   });
-    // } else if (args[0] == "clan" || args[0] == "2") {
-    //   const embed = new Discord.MessageEmbed()
-    //     .setTitle("Clan Commands")
-    //     .setColor("#00ffe5")
-    //     .setDescription(
-    //       "1. **clancreate** `==clancreate <clanname>` \n 2.**claninvite** `==claninvite <@Users> <clanname>` \n 3.**clanleave** `==clanleave <clanname>` \n 4.**clanview** `==clanview <clanname>` \n 5.**clankick** `==clankick <@users> <clanname>` \n 6.**clandisband** `==clandisband <clanname>` \n 7.**clanlist** `==clanlist` \n 8.**lfg** `==lfg` \n 9.**lfglist** `==lfglist` \n 10.**lfm** `==lfm <CLANNAME>` \n 11.**lfmlist** `==lfmlist`  "
-    //     )
-    //     .setFooter("Note: some commands are buggy and may change");
-    //   message.channel.send({
-    //     embed,
-    //   });
-    // } else if (args[0] == "admin" || args[0] == "3") {
-    //   const embed = new Discord.MessageEmbed()
-    //     .setTitle("Admin Commands")
-    //     .setColor("#ff1900")
-    //     .setDescription(":construction: Coming Soon! :construction:")
-    //     .setFooter("Note: some commands are buggy and may change");
-    //   message.channel.send({
-    //     embed,
-    //   });
-    // }
   },
 };

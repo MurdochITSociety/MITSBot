@@ -10,7 +10,7 @@ module.exports = {
   async execute(interaction) {
     const staff = interaction.member.roles.cache.some((role) => role.name == "Staff") || interaction.memberPermissions.has("ADMINISTRATOR");
     if (staff) {
-      toDelete = interaction.options.getInteger("count", true);
+      toDelete = Math.min(interaction.options.getInteger("count", true), 100);
       interaction.channel
         .bulkDelete(toDelete)
         .then((messages) => {
