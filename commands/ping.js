@@ -1,12 +1,11 @@
-const { default: fetch } = require("node-fetch");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
-    name: 'ping',
-    cooldown: 5,
-    execute(message, args) {
-        message.channel.send('Pinging!').then(sent => {
-            sent.edit(`Pong! this took: \`${sent.createdTimestamp - message.createdTimestamp}ms\` :heart:`);
-        });
-
-    },
+  data: new SlashCommandBuilder().setName("ping").setDescription("Ping, Pong!"),
+  cooldown: 5,
+  async execute(interaction) {
+    await interaction.reply("Pinging!").then((sent) => {
+      sent.edit(`Pong! this took: \`${sent.createdTimestamp - message.createdTimestamp}ms\` :heart:`);
+    });
+  },
 };

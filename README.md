@@ -19,6 +19,8 @@ just create a config.json with the following
 ```json
 {
   "token": "",
-  "prefix": ""
+  "clientId": "",
+  "guildId": "",
+  "ImageUrl": "https://cdn.discordapp.com/attachments/275962822762954752/941955625758384189/mits_logo.png"
 }
 ```
