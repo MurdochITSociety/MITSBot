@@ -5,14 +5,12 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("purge")
     .setDescription("Purge messages")
-    .addIntegerOption((opt) => {
-      opt.setName("count").setRequired(true).setDescription("Number of messages to delete");
-    }),
+    .addIntegerOption((opt) => opt.setName("count").setDescription("Number of messages to delete").setRequired(true)),
   cooldown: 5,
   async execute(interaction) {
-    staff = interaction.member.roles.cache.some((role) => role.name == "Staff") || interaction.member.hasPermission("ADMINISTRATOR");
+    const staff = interaction.member.roles.cache.some((role) => role.name == "Staff") || interaction.memberPermissions.has("ADMINISTRATOR");
     if (staff) {
-      toDelete = interaction.options.getNumber("Count", true) + 1;
+      toDelete = interaction.options.getInteger("count", true);
       interaction.channel
         .bulkDelete(toDelete)
         .then((messages) => {
