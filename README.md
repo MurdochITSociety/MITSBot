@@ -10,7 +10,8 @@ To use this bot please follow the guide below.
 
 1. Run `npm install` in your command-line
 2. Create a `config.json` file and fill it in with the example Config
-3. Run the `start.bat` or enter `npm run start-dev` (use `start-dev` to auto restart the bot if it crashes)
+3. On First launch of the bot, please run `node deployCommands.js` to register your commands with the discord API. This only has to be done if you modify a commands name, description or any other options attached, as well as adding/removing commands.
+4. Run the `start.bat` or enter `npm run start-dev` (use `start-dev` to auto restart the bot if it crashes)
 
 # Discord Bot Portal
 
