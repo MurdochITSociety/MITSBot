@@ -1,5 +1,5 @@
 @echo off 
-title Basic Bot
+title Mits Bot
 :START
 nodemon app.js
 goto START 
