@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { imageUrl } = require("./config.json");
+const { ImageUrl } = require("../config.json");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("help").setDescription("In need of some help?"),
@@ -14,8 +14,8 @@ module.exports = {
       .setTitle("Help Categories")
       .setColor("#039efc")
       .setDescription("1. **Fun Commands**\n 2.**Clan Commands**\n 3.**Admin Commands** \n **Usage:** ==help fun")
-      .setFooter("Note: some commands are buggy and may change")
-      .setImage(imageUrl);
+      .setFooter({ text: "Note: some commands are buggy and may change" /* iconUrl: ImageUrl */ })
+      .setThumbnail(ImageUrl);
 
     await interaction.reply({ embeds: [embed] });
     // } else if (args[0] == "fun" || args[0] == "1") {

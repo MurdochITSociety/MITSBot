@@ -7,11 +7,10 @@ module.exports = {
   data: new SlashCommandBuilder().setName("rtd").setDescription("Roll the dice and see what you get!"),
   cooldown: 5,
   async execute(interaction) {
-    await interaction.reply("Rolling Die!").then((sent) => {
-      sent.edit(`**.**`);
-      sent.edit(`**..**`);
-      sent.edit(`**...**`);
-      sent.edit(`you rolled a **${rand()}** :game_die:`);
-    });
+    await interaction.reply("Rolling Die!");
+    await interaction.editReply(`**.**`);
+    await interaction.editReply(`**..**`);
+    await interaction.editReply(`**...**`);
+    await interaction.editReply(`you rolled a **${rand()}** :game_die:`);
   },
 };

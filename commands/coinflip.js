@@ -15,12 +15,11 @@ module.exports = {
   data: new SlashCommandBuilder().setName("coinflip").setDescription("Heads? No Tails!"),
   cooldown: 5,
   async execute(interaction) {
-    await interaction.reply("__").then((sent) => {
-      sent.edit("\\");
-      sent.edit(`|`);
-      sent.edit(`/`);
-      sent.edit(`__`);
-      sent.edit(`**${rand()}**!`);
-    });
+    await interaction.reply("__");
+    await interaction.editReply("\\");
+    await interaction.editReply(`|`);
+    await interaction.editReply(`/`);
+    await interaction.editReply(`__`);
+    await interaction.editReply(`**${rand()}**!`);
   },
 };
