@@ -1,0 +1,27 @@
+{
+  "name": "mitsbot",
+  "version": "1.0.0",
+  "description": "A bot for the Murdoch IT Society Discord.",
+  "scripts": {
+    "start": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MurdochITSociety/MITSBot.git"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/MurdochITSociety/MITSBot",
+  "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.27.3",
+    "discord.js": "^13.6.0",
+    "ts-node": "^10.6.0",
+    "typescript": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "ts-node-dev": "^1.1.8"
+  }
+}

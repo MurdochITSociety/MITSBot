@@ -1,5 +1,9 @@
-config.json
+node_modules/
+build/
+dist/
+lib/
+docs/
 
-.vscode
-
-env
+.idea/*
+.DS_Store
+*.log
