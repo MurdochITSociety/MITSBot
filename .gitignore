@@ -7,3 +7,5 @@ docs/
 .idea/*
 .DS_Store
 *.log
+
+config.json
