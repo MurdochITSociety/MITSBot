@@ -19,6 +19,7 @@ export class CommandHandler {
         const rest = new REST({ version: '10' }).setToken(config.token);
         const commandsDir = path.join(__dirname, "..", "commands");
         const commandsFiles = fs.readdirSync(commandsDir).filter(f => f.endsWith(".ts"));
+        const body: any[] = [] // Command action list to send to Discord
 
         /* Load all commands in src/commands/ */
         for (const file of commandsFiles) {
@@ -27,14 +28,11 @@ export class CommandHandler {
             if (!command)
                 continue;
 
-            command.actions.forEach((action: SlashCommandBuilder) => this.commands.set(action.name, command))
+            command.actions.forEach((action: SlashCommandBuilder) => {
+                this.commands.set(action.name, command)
+                body.push(action)
+            })
         }
-
-        /* Prepare to send command action list to Discord */
-        const body: any[] = []
-        this.commands.forEach(command => {
-            command.actions.forEach(action => body.push(action))
-        })
 
         await rest
             .put(
