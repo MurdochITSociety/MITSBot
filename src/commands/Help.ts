@@ -12,10 +12,8 @@ export const command: Command = {
 			.setTitle('<:question:780285635021897729> Help')
 			.setColor(config.embed_color as ColorResolvable)
 
-		bot.commandHandler.commands.forEach(command => {
-            command.actions.forEach((action: SlashCommandBuilder) => {
-                helpEmbed.addField(action.name, action.description);
-            });
+		bot.commandHandler.actions.forEach((action: SlashCommandBuilder) => {
+            helpEmbed.addField(action.name, action.description);
 		});
 
         await intr.reply({ embeds: [helpEmbed] });

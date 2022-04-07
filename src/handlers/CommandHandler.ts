@@ -10,9 +10,11 @@ import * as config from "../config.json";
 
 export class CommandHandler {
     public commands: Collection<string, Command>;
+    public actions: Array<SlashCommandBuilder>;
 
     constructor() {
         this.commands = new Collection<string, Command>();
+        this.actions = new Array<SlashCommandBuilder>();
     }
 
     public async registerCommands(bot: Bot): Promise<void> {
@@ -30,6 +32,7 @@ export class CommandHandler {
 
             command.actions.forEach((action: SlashCommandBuilder) => {
                 this.commands.set(action.name, command)
+                this.actions.push(action)
                 body.push(action)
             })
         }
