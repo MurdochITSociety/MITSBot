@@ -5,6 +5,6 @@ import Bot from '../Bot';
 type Execute = (bot: Bot, interaction: CommandInteraction) => Promise<void>;
 
 export interface Command {
-    data: SlashCommandBuilder;
+    actions: SlashCommandBuilder[];
     exec: Execute;
 }

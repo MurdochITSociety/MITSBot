@@ -72,9 +72,9 @@ const resourcesEmbed = {
 };
 
 export const command: Command = {
-    data: new SlashCommandBuilder()
+    actions: [ new SlashCommandBuilder()
         .setName('resources')
-        .setDescription("Prints a curated list of resources for students."),
+        .setDescription("Prints a curated list of resources for students.") ],
     exec: async (bot, intr) => {
         await intr.reply({ embeds: [resourcesEmbed] });
     }
