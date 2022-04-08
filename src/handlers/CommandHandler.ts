@@ -20,12 +20,16 @@ export class CommandHandler {
         const commandsFiles = fs.readdirSync(commandsDir).filter(f => f.endsWith(".ts"));
 
         for (const file of commandsFiles) {
-            const { command } = await import(`${commandsDir}/${file}`);
+            const commands = await import(`${commandsDir}/${file}`);
 
-            if (!command)
-                continue;
+            for (const key in commands) {
+                const command = commands[key]
 
-            this.commands.set(command.data.name, command);
+                if (typeof command === 'undefined' || !command)
+                    continue;
+
+                this.commands.set(command.data.name, command)
+            }
         }
 
         await rest
