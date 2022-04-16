@@ -1,5 +1,12 @@
 {
   "applicationId": "",
+  "commands": {
+    "fact": {
+      "java": {
+        "entries": []
+      }
+    }
+  },
   "embed_color": "",
   "server": "",
   "token": ""
