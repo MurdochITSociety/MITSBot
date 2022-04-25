@@ -1,10 +1,10 @@
-import Collection from "@discordjs/collection";
+import Bot from "../Bot";
+import { Collection } from "@discordjs/collection";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
-import fs from "fs";
-import path from "path";
-import Bot from "../Bot";
 import { Command } from "../types/Command";
+import { readdir } from "fs/promises"
+import { join } from "path";
 import * as config from "../config.json";
 
 export class CommandHandler {
@@ -14,20 +14,42 @@ export class CommandHandler {
         this.commands = new Collection<string, Command>();
     }
 
+    public async importCommands(commandsDir: string): Promise<Command[]> {
+        const directory = await readdir(commandsDir)
+        const files = directory.filter(file => file.endsWith(".ts"))
+
+        return Promise.all(files.map(async file => {
+            const script = file.slice(0, -3) // remove .ts from filename for script name 
+            const commands = await import(join(commandsDir, file))
+
+            if (!commands)
+                return;
+
+            // Check for class type command
+            if (typeof commands[script] === 'function') {
+                const instance = new commands[script]()
+                return instance
+            }
+
+            // Check for object type command
+            if (typeof commands['command'] === 'object') {
+                return commands['command']
+            }
+        }))
+    }
+
     public async registerCommands(bot: Bot): Promise<void> {
         const rest = new REST({ version: '10' }).setToken(config.token);
-        const commandsDir = path.join(__dirname, "..", "commands");
-        const commandsFiles = fs.readdirSync(commandsDir).filter(f => f.endsWith(".ts"));
 
-        for (const file of commandsFiles) {
-            const { command } = await import(`${commandsDir}/${file}`);
+        // Import all commands from commands folder
+        const commands = await this.importCommands(join(__dirname, "..", "commands"));
 
-            if (!command)
-                continue;
-
+        // Register commands
+        commands.forEach(command => {
             this.commands.set(command.data.name, command);
-        }
+        });
 
+        // Send command info to Discord
         await rest
             .put(
                 Routes.applicationGuildCommands(
