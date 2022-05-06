@@ -17,7 +17,7 @@ export default class Bot extends Client {
         try {
             this.commandHandler.registerCommands(this);
             this.commandHandler.handleInteractions(this);
-            await this.login(config.token)
+            await this.login(config.tokens.discord_bot)
                 .then(() => console.log(`Logged in as ${this.application?.client.user?.username}`));
         } catch (e) {
             console.error(e);
