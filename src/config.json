@@ -5,11 +5,21 @@
       "java": {
         "entries": []
       }
+    },
+    "image": {
+      "animals": {
+        "choices": [],
+        "filter": ""
+      },
+      "harold": {
+          "images_dir": ""
+      }
     }
   },
   "embed_color": "",
   "server": "",
   "tokens": {
+    "bing_image_api": "",
     "discord_bot": ""
   }
 }
