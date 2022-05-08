@@ -39,7 +39,7 @@ export class CommandHandler {
     }
 
     public async registerCommands(bot: Bot): Promise<void> {
-        const rest = new REST({ version: '10' }).setToken(config.token);
+        const rest = new REST({ version: '10' }).setToken(config.tokens.discord_bot);
 
         // Import all commands from commands folder
         const commands = await this.importCommands(join(__dirname, "..", "commands"));
