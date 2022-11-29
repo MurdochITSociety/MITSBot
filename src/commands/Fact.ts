@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ColorResolvable, MessageEmbed } from 'discord.js';
+import { ColorResolvable, EmbedBuilder } from 'discord.js'; //changes from v13->v14
 import axios from 'axios';
 import { Command } from '../types/Command';
 import * as config from '../config.json';
@@ -8,6 +8,7 @@ export const command: Command = {
     data: new SlashCommandBuilder()
         .setName("fact")
         .setDescription("Retrieves facts about different things.")
+        
         .addSubcommand(sc => sc
             .setName("cat")
             .setDescription("Retrieves a cat fact.")
@@ -17,12 +18,17 @@ export const command: Command = {
             .setDescription("Retrieves a java fact.")
         ),
     exec: async (bot, intr) => {
-        const sc = intr.options.getSubcommand();
-
-        await getFact(sc)
+        /**
+         * Something to do with ApplicationCommand type being shared between slash commands and context menu commands.
+         * Context menus dont have subcommands, so having 'const sc = intr.options.getSubcommand()' produces and error
+         * as sub commands may not exist
+         */
+        if(intr.isChatInputCommand()) {
+            const sc = intr.options.getSubcommand();
+            await getFact(sc)
             .then(async (val: string) => await intr.reply({
                 embeds: [
-                    new MessageEmbed()
+                    new EmbedBuilder()
                         .setColor(config.embed_color as ColorResolvable)
                         .setTitle(`Here is a ${sc} fact!`)
                         .setDescription(val)
@@ -36,6 +42,10 @@ export const command: Command = {
                     ephemeral: true
                 });
             });
+        }
+        else {
+            return;
+        }
     }
 };
 

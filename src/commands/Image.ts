@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ColorResolvable, MessageAttachment, MessageEmbed } from 'discord.js';
-import fetch from 'node-fetch';
+import { ColorResolvable, AttachmentBuilder, EmbedBuilder } from 'discord.js'; //v13->v14
+const fetch = require('node-fetch'); //update in node-fetch removed the ability to import it or something
 import { join } from 'path';
 import { readdir } from 'fs/promises';
 import { Command } from '../types/Command';
@@ -15,14 +15,14 @@ export const command: Command = {
             .setDescription("Retrieves an image of the chosen animal.")
             .addStringOption(o => {
                 // Add the fixed categories.
-                o.addChoices([
-                    ["cat", "cat"],
-                    ["dog", "dog"],
-                ]);
+                o.addChoices( //v14 seems to have changed formatting for this
+                    { name: 'cats', value: 'cats'},
+                    { name: 'dogs', value: 'dogs'}
+                );
 
                 // Add the other categories, loaded from the configuration file.
                 config.commands.image.animals.choices
-                    .forEach(i => o.addChoice(i, i));
+                    .forEach(i => o.addChoices({ name: i, value: i }));
 
                 return o
                     .setName("choice")
@@ -39,59 +39,66 @@ export const command: Command = {
             .setDescription("Retrieves a picture of András Arató.")
         ),
     exec: async (bot, intr) => {
-        switch (intr.options.getSubcommand()) {
-            case "animal":
-                const choice = intr.options.getString("choice");
-                const isGif = intr.options.getBoolean("gif");
-
-                await fetchAnimal(choice, isGif)
-                    .then(async (url: string) => await intr.reply({
-                        embeds: [
-                            new MessageEmbed()
-                                .setColor(config.embed_color as ColorResolvable)
-                                .setImage(`${url}`)
-                                .setTitle(`Here is a ${choice}!`)
-                        ]
-                    }))
-                    .catch(async (err: Error) => {
-                        console.warn(`Error in Image command: ${err.message}`);
-
+        /**
+         * Something to do with ApplicationCommand type being shared between slash commands and context menu commands.
+         * Context menus dont have subcommands, so having 'const sc = intr.options.getSubcommand()' produces and error
+         * as sub commands may not exist
+         */
+        if(intr.isChatInputCommand()) {
+            switch (intr.options.getSubcommand()) {
+                case "animal":
+                    const choice = intr.options.getString("choice");
+                    const isGif = intr.options.getBoolean("gif");
+    
+                    await fetchAnimal(choice, isGif)
+                        .then(async (url: string) => await intr.reply({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setColor(config.embed_color as ColorResolvable)
+                                    .setImage(`${url}`)
+                                    .setTitle(`Here is a ${choice}!`)
+                            ]
+                        }))
+                        .catch(async (err: Error) => {
+                            console.warn(`Error in Image command: ${err.message}`);
+    
+                            await intr.reply({
+                                content: `Couldn't retrieve an image of a ${choice} :(`,
+                                ephemeral: true
+                            });
+                        });
+                    break;
+    
+                case "harold":
+                    // Relative directory path.
+                    const dirPath = join(__dirname, "..", config.commands.image.harold.images_dir);
+                    const files = await readdir(dirPath);
+    
+                    if (files.length == 0) {
+                        console.warn("Error in Image command: No images of harold were found in the intended directory.");
+    
                         await intr.reply({
-                            content: `Couldn't retrieve an image of a ${choice} :(`,
+                            content: "Couldn't retrieve an image of Harold :(",
                             ephemeral: true
                         });
-                    });
-                break;
-
-            case "harold":
-                // Relative directory path.
-                const dirPath = join(__dirname, "..", config.commands.image.harold.images_dir);
-                const files = await readdir(dirPath);
-
-                if (files.length == 0) {
-                    console.warn("Error in Image command: No images of harold were found in the intended directory.");
-
+                        break;
+                    }
+    
+                    // Picked at random between 1 and `files.length`.
+                    const fileName = files[Math.floor(Math.random() * ((files.length - 1) + 1) + 0)];
+                    const attachment = new AttachmentBuilder(join(dirPath, fileName), {name: fileName});
+    
                     await intr.reply({
-                        content: "Couldn't retrieve an image of Harold :(",
-                        ephemeral: true
+                        embeds: [
+                            new EmbedBuilder()
+                                .setColor(config.embed_color as ColorResolvable)
+                                .setImage(`attachment://${attachment.name}`)
+                                .setTitle(`Here's Harold!`)
+                        ],
+                        files: [attachment]
                     });
                     break;
-                }
-
-                // Picked at random between 1 and `files.length`.
-                const fileName = files[Math.floor(Math.random() * ((files.length - 1) + 1) + 0)];
-                const attachment = new MessageAttachment(join(dirPath, fileName), fileName);
-
-                await intr.reply({
-                    embeds: [
-                        new MessageEmbed()
-                            .setColor(config.embed_color as ColorResolvable)
-                            .setImage(`attachment://${attachment.name}`)
-                            .setTitle(`Here's Harold!`)
-                    ],
-                    files: [attachment]
-                });
-                break;
+            }
         }
     }
 };
@@ -120,8 +127,8 @@ async function fetchRandomBingImage(searchTerm: string, imageType: string): Prom
             headers: headers,
             method: 'GET'
         })
-        .then(async res => {
-            const data = await res.json();
+        .then(async (res: any) => {
+            const data: any = await res.json(); //man i wish i knew why this works
 
             if (data.length == 0)
                 throw Error("JSON body length is 0");
@@ -152,8 +159,8 @@ async function fetchAnimal(choice: string | null, isGif: boolean | null): Promis
             // The URL is the same for both, minus the actual word for
             // either "cat" or "dog" in the domain name.
             return await fetch(`https://api.the${choice}api.com/v1/images/search`, { method: 'GET' })
-                .then(async res => {
-                    const data = await res.json();
+                .then(async (res: any) => {
+                    const data: any = await res.json();
 
                     if (data[0].length == 0)
                         throw Error("JSON body length is 0");

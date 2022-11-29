@@ -4,7 +4,11 @@ import { Command } from "../types/Command";
 import * as config from "../config.json";
 
 const resourcesEmbed = {
-    color: config.embed_color as ColorResolvable,
+    /**
+     * using ColorResolvable produces an error stating that the property 'color' is incompatible
+     * changed to red as I dont see scenario where any embed needs to be a different color
+     */
+    color: 0xFF0000, 
     title: "<:student:780271578608828437> Resources",
     fields: [
         {
@@ -68,7 +72,7 @@ const resourcesEmbed = {
             ",
             inline: true
         }
-    ]
+    ],
 };
 
 export const command: Command = {
