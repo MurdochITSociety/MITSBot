@@ -1,4 +1,4 @@
-import { Client, Intents } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js"; //changes from v13->v14
 import { CommandHandler } from "./handlers/CommandHandler";
 import * as config from "./config.json";
 
@@ -7,7 +7,7 @@ export default class Bot extends Client {
 
     constructor() {
         super({
-            intents: [Intents.FLAGS.GUILDS]
+            intents: [GatewayIntentBits.Guilds] //changes from v13->v14
         });
 
         this.commandHandler = new CommandHandler();

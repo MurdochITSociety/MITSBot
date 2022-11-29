@@ -1,5 +1,5 @@
 {
-  "applicationId": "",
+  "applicationId": "1046719121770938398",
   "commands": {
     "fact": {
       "java": {
@@ -17,9 +17,9 @@
     }
   },
   "embed_color": "",
-  "server": "",
+  "server": "1000567789674835988",
   "tokens": {
     "bing_image_api": "",
-    "discord_bot": ""
+    "discord_bot": "MTA0NjcxOTEyMTc3MDkzODM5OA.GLV7qx.JID9_EgLO_NtS8i1za69YovWmGraQ3tvNTkWHo"
   }
 }
